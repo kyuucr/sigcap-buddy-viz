@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SigCap Buddy Data Visualization</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</head>
+<body>
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">SigCap Buddy Data</a>
+    </div>
+  </nav>
+  <div class="container-md">
+    <h3>Device <span id="device-id"></span></h3>
+    <a id="dl-csv">Download CSVs</a>
+    <a id="dl-log">Download raw logs</a>
+  </div>
+  <script type="text/javascript">
+      if(window.location.hash) {
+          const deviceId = window.location.hash.slice(1);
+          document.getElementById("device-id").innerHTML = deviceId;
+          document.getElementById("dl-csv").href = `csv_${deviceId}.zip`;
+          document.getElementById("dl-log").href = `rawlog_${deviceId}.zip`;
+      }
+  </script>
+</body>
+</html>

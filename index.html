@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SigCap Buddy Data Visualization</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <style>
+    .status-online::before,
+    .status-offline::before {
+      display: inline-block;
+      content: "";
+      vertical-align: -.125em;
+      background-repeat: no-repeat;
+      background-size: 1rem 1rem;
+      width: 1rem;
+      height: 1rem;
+      margin-right: .2rem;
+
+    }
+    .status-online::before {
+      background-image: url("data:image/svg+xml,<svg width='16' height='16' viewBox='0 0 16 16' fill='%230F0' class='bi bi-circle-fill' xmlns='http://www.w3.org/2000/svg'><circle cx='8' cy='8' r='8'/></svg>");
+    }
+    .status-offline::before {
+      background-image: url("data:image/svg+xml,<svg width='16' height='16' viewBox='0 0 16 16' fill='%23F00' class='bi bi-dash-circle-fill' xmlns='http://www.w3.org/2000/svg'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z'/></svg>");
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">SigCap Buddy Data</a>
+    </div>
+  </nav>
+  <div class="container-md">
+    <h3>Device List</h3>
+    <a href="all_csv.zip">Download all CSVs</a>
+    <a href="all_raw_logs.zip">Download all raw logs</a>
+    <table class="table table-striped-columns">
+      <thead>
+        <tr>
+          <th>MAC</th>
+          <th>Status</th>
+          <th>Last timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="device-list">
+      </tbody>
+    </table>
+  </div>
+  <script type="text/javascript">
+      fetch('device_list.json')
+          .then(function (response) {
+              return response.json();
+          })
+          .then(function (data) {
+              appendData(data);
+          })
+          .catch(function (err) {
+              console.log('error: ' + err);
+          });
+
+      function appendData(data) {
+          let mainContainer = document.getElementById("device-list");
+          for (let entry of data) {
+              let tr = document.createElement("tr");
+              tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.mac}</a></td>`
+                  + `<td>${entry.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>"}</td>`
+                  + `<td>${new Date(entry.last_timestamp)}</td>`;
+              mainContainer.appendChild(tr);
+          }
+      }
+  </script>
+</body>
+</html>
