@@ -31,7 +31,7 @@
 <body>
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">SigCap Buddy Data</a>
+      <a class="navbar-brand" href="index.html">SigCap Buddy Data</a>
     </div>
   </nav>
   <div class="container-md">
@@ -51,27 +51,27 @@
     </table>
   </div>
   <script type="text/javascript">
-      fetch('device_list.json')
-          .then(function (response) {
-              return response.json();
-          })
-          .then(function (data) {
-              appendData(data);
-          })
-          .catch(function (err) {
-              console.log('error: ' + err);
-          });
+    fetch('device_list.json')
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        appendData(data);
+      })
+      .catch(function (err) {
+        console.log('error: ' + err);
+      });
 
-      function appendData(data) {
-          let mainContainer = document.getElementById("device-list");
-          for (let entry of data) {
-              let tr = document.createElement("tr");
-              tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.mac}</a></td>`
-                  + `<td>${entry.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>"}</td>`
-                  + `<td>${new Date(entry.last_timestamp)}</td>`;
-              mainContainer.appendChild(tr);
-          }
+    function appendData(data) {
+      let mainContainer = document.getElementById("device-list");
+      for (let entry of data) {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.mac}</a></td>`
+          + `<td>${entry.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>"}</td>`
+          + `<td>${new Date(entry.last_timestamp)}</td>`;
+        mainContainer.appendChild(tr);
       }
+    }
   </script>
 </body>
 </html>
