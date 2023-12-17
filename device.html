@@ -10,21 +10,91 @@
 <body>
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">SigCap Buddy Data</a>
+      <a class="navbar-brand" href="index.html">SigCap Buddy Data</a>
     </div>
   </nav>
   <div class="container-md">
     <h3>Device <span id="device-id"></span></h3>
     <a id="dl-csv">Download CSV & JSON data</a>
     <a id="dl-log">Download raw logs</a>
+    <h4>Downlink throughput</h4>
+    <div id="dl-tput-plot"></div>
+    <h4>Uplink throughput</h4>
+    <div id="ul-tput-plot"></div>
+    <h4>Latency</h4>
+    <div id="latency-plot"></div>
   </div>
-  <script type="text/javascript">
-      if(window.location.hash) {
-          const deviceId = window.location.hash.slice(1);
-          document.getElementById("device-id").innerHTML = deviceId;
-          document.getElementById("dl-csv").href = `data_${deviceId}.zip`;
-          document.getElementById("dl-log").href = `rawlogs_${deviceId}.zip`;
-      }
+  <script type="module">
+    import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+    function appendData(data, yLabel, yVal, strokeVal, id) {
+      const plot = Plot.plot({
+        y: {grid: true, label: yLabel},
+        color: {
+          legend: true
+        },
+        marks: [
+          Plot.ruleY([0]),
+          Plot.lineY(data,
+            {
+              x: val => new Date(val.timestamp),
+              y: yVal,
+              sort: "timestamp",
+              stroke: strokeVal
+            }
+          )
+        ]
+      })
+      const div = document.querySelector(id);
+      div.append(plot);
+    }
+
+    if(window.location.hash) {
+      const deviceId = window.location.hash.slice(1);
+      document.getElementById("device-id").innerHTML = deviceId;
+      document.getElementById("dl-csv").href = `data_${deviceId}.zip`;
+      document.getElementById("dl-log").href = `rawlogs_${deviceId}.zip`;
+
+      fetch(`throughput_${deviceId}.json`)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          appendData(
+            data.filter(val => val.direction === "downlink"),
+            "Throughput (Mbps)",
+            "tput_mbps",
+            (val => `${val.type} ${val.interface}`),
+            "#dl-tput-plot"
+          );
+          appendData(
+            data.filter(val => val.direction === "uplink"),
+            "Throughput (Mbps)",
+            "tput_mbps",
+            (val => `${val.type} ${val.interface}`),
+            "#ul-tput-plot"
+          );
+        })
+        .catch(function (err) {
+          console.log('error: ' + err);
+        });
+
+      fetch(`latency_${deviceId}.json`)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          appendData(
+            data,
+            "Latency (ms)",
+            "latency_ms",
+            (val => `${val.type} ${val.interface}`),
+            "#latency-plot"
+          );
+        })
+        .catch(function (err) {
+          console.log('error: ' + err);
+        });
+    }
   </script>
 </body>
 </html>
