@@ -15,15 +15,15 @@
   </nav>
   <div class="container-md">
     <h3>Device <span id="device-id"></span></h3>
-    <a id="dl-csv">Download CSVs</a>
+    <a id="dl-csv">Download CSV & JSON data</a>
     <a id="dl-log">Download raw logs</a>
   </div>
   <script type="text/javascript">
       if(window.location.hash) {
           const deviceId = window.location.hash.slice(1);
           document.getElementById("device-id").innerHTML = deviceId;
-          document.getElementById("dl-csv").href = `csv_${deviceId}.zip`;
-          document.getElementById("dl-log").href = `rawlog_${deviceId}.zip`;
+          document.getElementById("dl-csv").href = `data_${deviceId}.zip`;
+          document.getElementById("dl-log").href = `rawlogs_${deviceId}.zip`;
       }
   </script>
 </body>
