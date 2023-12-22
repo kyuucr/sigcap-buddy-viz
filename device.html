@@ -23,12 +23,21 @@
     <div id="ul-tput-plot"></div>
     <h4>Latency</h4>
     <div id="latency-plot"></div>
+    <h4>Connected Wi-Fi RSSI</h4>
+    <div id="wifi-rssi-plot"></div>
   </div>
   <script type="module">
     import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
     function appendData(data, yLabel, yVal, strokeVal, id) {
       const plot = Plot.plot({
-        y: {grid: true, label: yLabel},
+        x: {
+          grid: true,
+          type: "time"
+        },
+        y: {
+          grid: true,
+          label: yLabel
+        },
         color: {
           legend: true
         },
@@ -89,6 +98,23 @@
             "latency_ms",
             (val => `${val.type} ${val.interface}`),
             "#latency-plot"
+          );
+        })
+        .catch(function (err) {
+          console.log('error: ' + err);
+        });
+
+      fetch(`wifi_scan_${deviceId}.json`)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          appendData(
+            data.filter(val => val.connected === true),
+            "RSSI (dBm)",
+            "rssi_dbm",
+            "#F00",
+            "#wifi-rssi-plot"
           );
         })
         .catch(function (err) {
