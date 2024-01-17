@@ -17,13 +17,41 @@
     <h3>Device <span id="device-id"></span></h3>
     <a id="dl-csv">Download CSV & JSON data</a>
     <a id="dl-log">Download raw logs</a>
-    <h4>Downlink throughput</h4>
+    <h4 id="dl-tput-plot-label" style="display: none">Downlink throughput</h4>
     <div id="dl-tput-plot"></div>
-    <h4>Uplink throughput</h4>
+    <h5 id="dl-tput-boxplot-iperf-eth0-label" style="display: none">Hourly downlink throughput &#8212; iperf eth0</h5>
+    <div id="dl-tput-boxplot-iperf-eth0"></div>
+    <h5 id="dl-tput-boxplot-iperf-wlan0-label" style="display: none">Hourly downlink throughput &#8212; iperf wlan0</h5>
+    <div id="dl-tput-boxplot-iperf-wlan0"></div>
+    <h5 id="dl-tput-boxplot-speedtest-eth0-label" style="display: none">Hourly downlink throughput &#8212; Ookla eth0</h5>
+    <div id="dl-tput-boxplot-speedtest-eth0"></div>
+    <h5 id="dl-tput-boxplot-speedtest-wlan0-label" style="display: none">Hourly downlink throughput &#8212; Ookla wlan0</h5>
+    <div id="dl-tput-boxplot-speedtest-wlan0"></div>
+    <h4 id="ul-tput-plot-label" style="display: none">Uplink throughput</h4>
     <div id="ul-tput-plot"></div>
-    <h4>Latency</h4>
+    <h5 id="ul-tput-boxplot-iperf-eth0-label" style="display: none">Hourly uplink throughput &#8212; iperf eth0</h5>
+    <div id="ul-tput-boxplot-iperf-eth0"></div>
+    <h5 id="ul-tput-boxplot-iperf-wlan0-label" style="display: none">Hourly uplink throughput &#8212; iperf wlan0</h5>
+    <div id="ul-tput-boxplot-iperf-wlan0"></div>
+    <h5 id="ul-tput-boxplot-speedtest-eth0-label" style="display: none">Hourly uplink throughput &#8212; Ookla eth0</h5>
+    <div id="ul-tput-boxplot-speedtest-eth0"></div>
+    <h5 id="ul-tput-boxplot-speedtest-wlan0-label" style="display: none">Hourly uplink throughput &#8212; Ookla wlan0</h5>
+    <div id="ul-tput-boxplot-speedtest-wlan0"></div>
+    <h4 id="latency-plot-label" style="display: none">Latency</h4>
     <div id="latency-plot"></div>
-    <h4>Connected Wi-Fi RSSI</h4>
+    <h5 id="latency-idle-boxplot-speedtest-eth0-label" style="display: none">Hourly idle latency &#8212; Ookla eth0</h5>
+    <div id="latency-idle-boxplot-speedtest-eth0"></div>
+    <h5 id="latency-dlload-boxplot-speedtest-eth0-label" style="display: none">Hourly DL-load latency &#8212; Ookla eth0</h5>
+    <div id="latency-dlload-boxplot-speedtest-eth0"></div>
+    <h5 id="latency-ulload-boxplot-speedtest-eth0-label" style="display: none">Hourly UL-load latency &#8212; Ookla eth0</h5>
+    <div id="latency-ulload-boxplot-speedtest-eth0"></div>
+    <h5 id="latency-idle-boxplot-speedtest-wlan0-label" style="display: none">Hourly idle latency &#8212; Ookla wlan0</h5>
+    <div id="latency-idle-boxplot-speedtest-wlan0"></div>
+    <h5 id="latency-dlload-boxplot-speedtest-wlan0-label" style="display: none">Hourly DL-load latency &#8212; Ookla wlan0</h5>
+    <div id="latency-dlload-boxplot-speedtest-wlan0"></div>
+    <h5 id="latency-ulload-boxplot-speedtest-wlan0-label" style="display: none">Hourly UL-load latency &#8212; Ookla wlan0</h5>
+    <div id="latency-ulload-boxplot-speedtest-wlan0"></div>
+    <h4 id="wifi-rssi-plot-label" style="display: none">Connected Wi-Fi RSSI</h4>
     <div id="wifi-rssi-plot"></div>
     <h4>Heartbeats</h4>
     <table class="table table-striped-columns">
@@ -66,6 +94,30 @@
       })
       const div = document.querySelector(id);
       div.append(plot);
+      const divLabel = document.querySelector(id + "-label");
+      divLabel.style.display = ""
+    }
+
+    function appendBoxplot(data, yLabel, yVal, id) {
+      const plot = Plot.plot({
+        y: {
+          grid: true,
+          label: yLabel
+        },
+        fx: {
+          interval: 1,
+          label: "Hour of the day",
+          labelAnchor: "right"
+        },
+        marks: [
+          Plot.ruleY([0]),
+          Plot.boxY(data, {fx: val => new Date(val.timestamp).getHours(), y: yVal})
+        ]
+      })
+      const div = document.querySelector(id);
+      div.append(plot);
+      const divLabel = document.querySelector(id + "-label");
+      divLabel.style.display = ""
     }
 
     function appendHeartbeat(data) {
@@ -107,20 +159,107 @@
           return response.json();
         })
         .then(function (data) {
-          appendData(
-            data.filter(val => val.direction === "downlink"),
-            "Throughput (Mbps)",
-            "max_tput_mbps",
-            (val => `${val.type} ${val.interface}`),
-            "#dl-tput-plot"
-          );
-          appendData(
-            data.filter(val => val.direction === "uplink"),
-            "Throughput (Mbps)",
-            "max_tput_mbps",
-            (val => `${val.type} ${val.interface}`),
-            "#ul-tput-plot"
-          );
+          let dlData = data.filter(val => val.direction === "downlink");
+          if (dlData.length > 0) {
+            appendData(
+              dlData,
+              "Throughput (Mbps)",
+              "max_tput_mbps",
+              (val => `${val.type} ${val.interface}`),
+              "#dl-tput-plot"
+            );
+            let dlIperfEth0 = dlData.filter(val => val.type === "iperf"
+              && val.interface === "eth0");
+            if (dlIperfEth0.length > 0) {
+              appendBoxplot(
+                dlIperfEth0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#dl-tput-boxplot-iperf-eth0"
+              );
+            }
+            let dlIperfWlan0 = dlData.filter(val => val.type === "iperf"
+              && val.interface === "wlan0");
+            if (dlIperfWlan0.length > 0) {
+              appendBoxplot(
+                dlIperfWlan0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#dl-tput-boxplot-iperf-wlan0"
+              );
+            }
+            let dlSpeedtestEth0 = dlData.filter(val => val.type === "speedtest"
+              && val.interface === "eth0");
+            if (dlSpeedtestEth0.length > 0) {
+              appendBoxplot(
+                dlSpeedtestEth0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#dl-tput-boxplot-speedtest-eth0"
+              );
+            }
+            let dlSpeedtestWlan0 = dlData.filter(val => val.type === "speedtest"
+              && val.interface === "wlan0");
+            if (dlSpeedtestWlan0.length > 0) {
+              appendBoxplot(
+                dlSpeedtestWlan0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#dl-tput-boxplot-speedtest-wlan0"
+              );
+            }
+          }
+
+          let ulData = data.filter(val => val.direction === "uplink");
+          if (ulData.length > 0) {
+            appendData(
+              ulData,
+              "Throughput (Mbps)",
+              "max_tput_mbps",
+              (val => `${val.type} ${val.interface}`),
+              "#ul-tput-plot"
+            );
+            let ulIperfEth0 = ulData.filter(val => val.type === "iperf"
+              && val.interface === "eth0");
+            if (ulIperfEth0.length > 0) {
+              appendBoxplot(
+                ulIperfEth0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#ul-tput-boxplot-iperf-eth0"
+              );
+            }
+            let ulIperfWlan0 = ulData.filter(val => val.type === "iperf"
+              && val.interface === "wlan0");
+            if (ulIperfWlan0.length > 0) {
+              appendBoxplot(
+                ulIperfWlan0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#ul-tput-boxplot-iperf-wlan0"
+              );
+            }
+            let ulSpeedtestEth0 = ulData.filter(val => val.type === "speedtest"
+              && val.interface === "eth0");
+            if (ulSpeedtestEth0.length > 0) {
+              appendBoxplot(
+                ulSpeedtestEth0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#ul-tput-boxplot-speedtest-eth0"
+              );
+            }
+            let ulSpeedtestWlan0 = ulData.filter(val => val.type === "speedtest"
+              && val.interface === "wlan0");
+            if (ulSpeedtestWlan0.length > 0) {
+              appendBoxplot(
+                ulSpeedtestWlan0,
+                "Throughput (Mbps)",
+                "max_tput_mbps",
+                "#ul-tput-boxplot-speedtest-wlan0"
+              );
+            }
+          }
         })
         .catch(function (err) {
           console.log('error: ' + err);
@@ -131,13 +270,75 @@
           return response.json();
         })
         .then(function (data) {
-          appendData(
-            data,
-            "Latency (ms)",
-            "latency_ms",
-            (val => `${val.type} ${val.interface}`),
-            "#latency-plot"
-          );
+          if (data.length > 0) {
+            appendData(
+              data,
+              "Latency (ms)",
+              "latency_ms",
+              (val => `${val.type} ${val.interface}`),
+              "#latency-plot"
+            );
+            let idleLatEth0 = data.filter(val => val.type === "speedtest_idle"
+              && val.interface === "eth0");
+            if (idleLatEth0.length > 0) {
+              appendBoxplot(
+                idleLatEth0,
+                "Latency (ms)",
+                "latency_ms",
+                "#latency-idle-boxplot-speedtest-eth0"
+              );
+            }
+            let dlloadLatEth0 = data.filter(val => val.type === "speedtest_dl_load"
+              && val.interface === "eth0");
+            if (dlloadLatEth0.length > 0) {
+              appendBoxplot(
+                dlloadLatEth0,
+                "Latency (ms)",
+                "latency_ms",
+                "#latency-dlload-boxplot-speedtest-eth0"
+              );
+            }
+            let ulloadEth0 = data.filter(val => val.type === "speedtest_ul_load"
+              && val.interface === "eth0");
+            if (ulloadEth0.length > 0) {
+              appendBoxplot(
+                ulloadEth0,
+                "Latency (ms)",
+                "latency_ms",
+                "#latency-ulload-boxplot-speedtest-eth0"
+              );
+            }
+            let idleLatWlan0 = data.filter(val => val.type === "speedtest_idle"
+              && val.interface === "wlan0");
+            if (idleLatWlan0.length > 0) {
+              appendBoxplot(
+                idleLatWlan0,
+                "Latency (ms)",
+                "latency_ms",
+                "#latency-idle-boxplot-speedtest-wlan0"
+              );
+            }
+            let dlloadLatWlan0 = data.filter(val => val.type === "speedtest_dl_load"
+              && val.interface === "wlan0");
+            if (dlloadLatWlan0.length > 0) {
+              appendBoxplot(
+                dlloadLatWlan0,
+                "Latency (ms)",
+                "latency_ms",
+                "#latency-dlload-boxplot-speedtest-wlan0"
+              );
+            }
+            let ulloadWlan0 = data.filter(val => val.type === "speedtest_ul_load"
+              && val.interface === "wlan0");
+            if (ulloadWlan0.length > 0) {
+              appendBoxplot(
+                ulloadWlan0,
+                "Latency (ms)",
+                "latency_ms",
+                "#latency-ulload-boxplot-speedtest-wlan0"
+              );
+            }
+          }
         })
         .catch(function (err) {
           console.log('error: ' + err);
@@ -148,13 +349,16 @@
           return response.json();
         })
         .then(function (data) {
-          appendData(
-            data.filter(val => val.connected === true),
-            "RSSI (dBm)",
-            "rssi_dbm",
-            "#F00",
-            "#wifi-rssi-plot"
-          );
+          let dataConnected = data.filter(val => val.connected === true);
+          if (dataConnected.length > 0) {
+            appendData(
+              dataConnected,
+              "RSSI (dBm)",
+              "rssi_dbm",
+              "#F00",
+              "#wifi-rssi-plot"
+            );
+          }
         })
         .catch(function (err) {
           console.log('error: ' + err);
