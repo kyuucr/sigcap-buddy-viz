@@ -25,6 +25,17 @@
     <div id="latency-plot"></div>
     <h4>Connected Wi-Fi RSSI</h4>
     <div id="wifi-rssi-plot"></div>
+    <h4>Heartbeats</h4>
+    <table class="table table-striped-columns">
+      <thead>
+        <tr>
+          <th>Start Timestamp</th>
+          <th>End Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="heartbeat">
+      </tbody>
+    </table>
   </div>
   <script type="module">
     import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
@@ -57,6 +68,34 @@
       div.append(plot);
     }
 
+    function appendHeartbeat(data) {
+      let mainContainer = document.getElementById("heartbeat");
+      data = data.map(a => ({ last_timestamp: new Date(a.last_timestamp) }));
+      data.sort((a, b) => a.last_timestamp.getTime() - b.last_timestamp.getTime());
+      let reducedDates = data.reduce((prev, curr) => {
+        if (prev.length === 0) {
+          prev.push({
+            start_timestamp: curr.last_timestamp,
+            last_timestamp: curr.last_timestamp
+          });
+        } else if ((curr.last_timestamp.getTime() - prev[0].last_timestamp.getTime()) < 5400000) { // 90 minutes threshold
+          prev[0].last_timestamp = curr.last_timestamp;
+        } else {
+          prev.unshift({
+            start_timestamp: curr.last_timestamp,
+            last_timestamp: curr.last_timestamp
+          })
+        }
+        return prev;
+      }, []);
+      // console.log(reducedDates)
+      for (let entry of reducedDates) {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `<td>${entry.start_timestamp}</td><td>${entry.last_timestamp}</td>`;
+        mainContainer.appendChild(tr);
+      }
+    }
+
     if(window.location.hash) {
       const deviceId = window.location.hash.slice(1);
       document.getElementById("device-id").innerHTML = deviceId;
@@ -71,14 +110,14 @@
           appendData(
             data.filter(val => val.direction === "downlink"),
             "Throughput (Mbps)",
-            "tput_mbps",
+            "max_tput_mbps",
             (val => `${val.type} ${val.interface}`),
             "#dl-tput-plot"
           );
           appendData(
             data.filter(val => val.direction === "uplink"),
             "Throughput (Mbps)",
-            "tput_mbps",
+            "max_tput_mbps",
             (val => `${val.type} ${val.interface}`),
             "#ul-tput-plot"
           );
@@ -116,6 +155,17 @@
             "#F00",
             "#wifi-rssi-plot"
           );
+        })
+        .catch(function (err) {
+          console.log('error: ' + err);
+        });
+
+      fetch(`heartbeat_${deviceId}.json`)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          appendHeartbeat(data);
         })
         .catch(function (err) {
           console.log('error: ' + err);
