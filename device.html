@@ -6,6 +6,26 @@
   <title>SigCap Buddy Data Visualization</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <style>
+    .status-online::before,
+    .status-offline::before {
+      display: inline-block;
+      content: "";
+      vertical-align: -.125em;
+      background-repeat: no-repeat;
+      background-size: 1rem 1rem;
+      width: 1rem;
+      height: 1rem;
+      margin-right: .2rem;
+
+    }
+    .status-online::before {
+      background-image: url("data:image/svg+xml,<svg width='16' height='16' viewBox='0 0 16 16' fill='%230F0' class='bi bi-circle-fill' xmlns='http://www.w3.org/2000/svg'><circle cx='8' cy='8' r='8'/></svg>");
+    }
+    .status-offline::before {
+      background-image: url("data:image/svg+xml,<svg width='16' height='16' viewBox='0 0 16 16' fill='%23F00' class='bi bi-dash-circle-fill' xmlns='http://www.w3.org/2000/svg'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z'/></svg>");
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -80,6 +100,7 @@
     <table class="table table-striped-columns">
       <thead>
         <tr>
+          <th>Status</th>
           <th>Start Timestamp</th>
           <th>End Timestamp</th>
         </tr>
@@ -150,6 +171,7 @@
       let reducedDates = data.reduce((prev, curr) => {
         if (prev.length === 0) {
           prev.push({
+            online: true,
             start_timestamp: curr.last_timestamp,
             last_timestamp: curr.last_timestamp
           });
@@ -157,16 +179,28 @@
           prev[0].last_timestamp = curr.last_timestamp;
         } else {
           prev.unshift({
+            online: true,
             start_timestamp: curr.last_timestamp,
             last_timestamp: curr.last_timestamp
           })
         }
         return prev;
       }, []);
-      // console.log(reducedDates)
-      for (let entry of reducedDates) {
+      let filledDates = [];
+      for (var j = reducedDates.length - 1; j >= 0; j--) {
+        filledDates.unshift(reducedDates[j]);
+        if (j > 0) {
+          filledDates.unshift({
+            online: false,
+            start_timestamp: reducedDates[j].last_timestamp,
+            last_timestamp: reducedDates[j - 1].start_timestamp
+          });
+        }
+      }
+      // console.log(filledDates)
+      for (let entry of filledDates) {
         let tr = document.createElement("tr");
-        tr.innerHTML = `<td>${entry.start_timestamp}</td><td>${entry.last_timestamp}</td>`;
+        tr.innerHTML = `<td>${entry.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>"}</td><td>${entry.start_timestamp}</td><td>${entry.last_timestamp}</td>`;
         mainContainer.appendChild(tr);
       }
     }
