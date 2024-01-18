@@ -29,9 +29,15 @@
   </style>
 </head>
 <body>
-  <nav class="navbar bg-body-tertiary">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="index.html">SigCap Buddy Data</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <span class="navbar-text" id="lastupdate-text"></span>
+      </div>
     </div>
   </nav>
   <div class="container-md">
@@ -51,6 +57,15 @@
     </table>
   </div>
   <script type="text/javascript">
+    fetch(`last_update.json`)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        const div = document.querySelector("#lastupdate-text");
+        div.innerHTML = `Last update: ${new Date(data.last_update)}`
+      })
+
     fetch('device_list.json')
       .then(function (response) {
         return response.json();
