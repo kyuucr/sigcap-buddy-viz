@@ -77,11 +77,20 @@
         console.log('error: ' + err);
       });
 
+    // Hardcoded dict
+    const deviceDict = {
+      "8E-51-F9-59-3F-8D": "UChicago Pi",
+      "D8-3A-DD-41-AA-94": "Prof. Ghosh's friend Pi",
+      "D8-3A-DD-4C-C5-19": "Prof. Ghosh's Chi Pi",
+      "D8-3A-DD-4C-C5-CE": "Prof. Ghosh's SB Pi",
+      "DC-A6-32-1D-A4-E0": "Prof. Striegel's Pi"
+    }
+
     function appendData(data) {
       let mainContainer = document.getElementById("device-list");
       for (let entry of data) {
         let tr = document.createElement("tr");
-        tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.mac}</a></td>`
+        tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.mac}${deviceDict[entry.mac] ? " <small class=\"text-muted\">(" + deviceDict[entry.mac] + ")</small>" : ""}</a></td>`
           + `<td>${entry.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>"}</td>`
           + `<td>${new Date(entry.last_timestamp)}</td>`;
         mainContainer.appendChild(tr);
