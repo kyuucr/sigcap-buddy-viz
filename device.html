@@ -111,7 +111,11 @@
   </div>
   <script type="module">
     import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-    function appendData(data, yLabel, yVal, strokeVal, id) {
+    function appendData(data, yLabel, yVal, strokeVal, id, maxY) {
+      let domainY;
+      if (maxY !== undefined) {
+        domainY = [0, maxY];
+      }
       const plot = Plot.plot({
         x: {
           grid: true,
@@ -119,7 +123,8 @@
         },
         y: {
           grid: true,
-          label: yLabel
+          label: yLabel,
+          domain: domainY
         },
         color: {
           legend: true
@@ -142,11 +147,16 @@
       divLabel.style.display = ""
     }
 
-    function appendBoxplot(data, yLabel, yVal, id) {
+    function appendBoxplot(data, yLabel, yVal, id, maxY) {
+      let domainY;
+      if (maxY !== undefined) {
+        domainY = [0, maxY];
+      }
       const plot = Plot.plot({
         y: {
           grid: true,
-          label: yLabel
+          label: yLabel,
+          domain: domainY
         },
         fx: {
           interval: 1,
@@ -226,13 +236,15 @@
         })
         .then(function (data) {
           let dlData = data.filter(val => val.direction === "downlink");
+          let maxTputDl = dlData.reduce((acc, curr) => ((curr.max_tput_mbps > acc) ? curr.max_tput_mbps : acc), 0)
           if (dlData.length > 0) {
             appendData(
               dlData,
               "Throughput (Mbps)",
               "max_tput_mbps",
               (val => `${val.type} ${val.interface}`),
-              "#dl-tput-plot"
+              "#dl-tput-plot",
+              maxTputDl
             );
             let dlIperfEth0 = dlData.filter(val => val.type === "iperf"
               && val.interface === "eth0");
@@ -241,7 +253,8 @@
                 dlIperfEth0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#dl-tput-boxplot-iperf-eth0"
+                "#dl-tput-boxplot-iperf-eth0",
+                maxTputDl
               );
             }
             let dlIperfWlan0 = dlData.filter(val => val.type === "iperf"
@@ -251,7 +264,8 @@
                 dlIperfWlan0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#dl-tput-boxplot-iperf-wlan0"
+                "#dl-tput-boxplot-iperf-wlan0",
+                maxTputDl
               );
             }
             let dlSpeedtestEth0 = dlData.filter(val => val.type === "speedtest"
@@ -261,7 +275,8 @@
                 dlSpeedtestEth0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#dl-tput-boxplot-speedtest-eth0"
+                "#dl-tput-boxplot-speedtest-eth0",
+                maxTputDl
               );
             }
             let dlSpeedtestWlan0 = dlData.filter(val => val.type === "speedtest"
@@ -271,19 +286,22 @@
                 dlSpeedtestWlan0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#dl-tput-boxplot-speedtest-wlan0"
+                "#dl-tput-boxplot-speedtest-wlan0",
+                maxTputDl
               );
             }
           }
 
           let ulData = data.filter(val => val.direction === "uplink");
+          let maxTputUl = ulData.reduce((acc, curr) => ((curr.max_tput_mbps > acc) ? curr.max_tput_mbps : acc), 0)
           if (ulData.length > 0) {
             appendData(
               ulData,
               "Throughput (Mbps)",
               "max_tput_mbps",
               (val => `${val.type} ${val.interface}`),
-              "#ul-tput-plot"
+              "#ul-tput-plot",
+              maxTputUl
             );
             let ulIperfEth0 = ulData.filter(val => val.type === "iperf"
               && val.interface === "eth0");
@@ -292,7 +310,8 @@
                 ulIperfEth0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#ul-tput-boxplot-iperf-eth0"
+                "#ul-tput-boxplot-iperf-eth0",
+                maxTputUl
               );
             }
             let ulIperfWlan0 = ulData.filter(val => val.type === "iperf"
@@ -302,7 +321,8 @@
                 ulIperfWlan0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#ul-tput-boxplot-iperf-wlan0"
+                "#ul-tput-boxplot-iperf-wlan0",
+                maxTputUl
               );
             }
             let ulSpeedtestEth0 = ulData.filter(val => val.type === "speedtest"
@@ -312,7 +332,8 @@
                 ulSpeedtestEth0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#ul-tput-boxplot-speedtest-eth0"
+                "#ul-tput-boxplot-speedtest-eth0",
+                maxTputUl
               );
             }
             let ulSpeedtestWlan0 = ulData.filter(val => val.type === "speedtest"
@@ -322,7 +343,8 @@
                 ulSpeedtestWlan0,
                 "Throughput (Mbps)",
                 "max_tput_mbps",
-                "#ul-tput-boxplot-speedtest-wlan0"
+                "#ul-tput-boxplot-speedtest-wlan0",
+                maxTputUl
               );
             }
           }
@@ -336,13 +358,16 @@
           return response.json();
         })
         .then(function (data) {
+          data = data.filter(val => val.latency_ms < 5000);
           if (data.length > 0) {
+            let maxLat = data.reduce((acc, curr) => ((curr.latency_ms > acc) ? curr.latency_ms : acc), 0)
             appendData(
               data,
               "Latency (ms)",
               "latency_ms",
               (val => `${val.type} ${val.interface}`),
-              "#latency-plot"
+              "#latency-plot",
+              maxLat
             );
             let idleLatEth0 = data.filter(val => val.type === "speedtest_idle"
               && val.interface === "eth0");
@@ -351,7 +376,8 @@
                 idleLatEth0,
                 "Latency (ms)",
                 "latency_ms",
-                "#latency-idle-boxplot-speedtest-eth0"
+                "#latency-idle-boxplot-speedtest-eth0",
+                maxLat
               );
             }
             let dlloadLatEth0 = data.filter(val => val.type === "speedtest_dl_load"
@@ -361,7 +387,8 @@
                 dlloadLatEth0,
                 "Latency (ms)",
                 "latency_ms",
-                "#latency-dlload-boxplot-speedtest-eth0"
+                "#latency-dlload-boxplot-speedtest-eth0",
+                maxLat
               );
             }
             let ulloadEth0 = data.filter(val => val.type === "speedtest_ul_load"
@@ -371,7 +398,8 @@
                 ulloadEth0,
                 "Latency (ms)",
                 "latency_ms",
-                "#latency-ulload-boxplot-speedtest-eth0"
+                "#latency-ulload-boxplot-speedtest-eth0",
+                maxLat
               );
             }
             let idleLatWlan0 = data.filter(val => val.type === "speedtest_idle"
@@ -381,7 +409,8 @@
                 idleLatWlan0,
                 "Latency (ms)",
                 "latency_ms",
-                "#latency-idle-boxplot-speedtest-wlan0"
+                "#latency-idle-boxplot-speedtest-wlan0",
+                maxLat
               );
             }
             let dlloadLatWlan0 = data.filter(val => val.type === "speedtest_dl_load"
@@ -391,7 +420,8 @@
                 dlloadLatWlan0,
                 "Latency (ms)",
                 "latency_ms",
-                "#latency-dlload-boxplot-speedtest-wlan0"
+                "#latency-dlload-boxplot-speedtest-wlan0",
+                maxLat
               );
             }
             let ulloadWlan0 = data.filter(val => val.type === "speedtest_ul_load"
@@ -401,7 +431,8 @@
                 ulloadWlan0,
                 "Latency (ms)",
                 "latency_ms",
-                "#latency-ulload-boxplot-speedtest-wlan0"
+                "#latency-ulload-boxplot-speedtest-wlan0",
+                maxLat
               );
             }
           }
@@ -422,7 +453,8 @@
               "RSSI (dBm)",
               "rssi_dbm",
               "#F00",
-              "#wifi-rssi-plot"
+              "#wifi-rssi-plot",
+
             );
           }
         })
