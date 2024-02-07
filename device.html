@@ -454,34 +454,22 @@
 
     function appendHeartbeat(data) {
       let mainContainer = document.getElementById("heartbeat");
-      data = data.map(a => ({ last_timestamp: new Date(a.last_timestamp) }));
-      data.sort((a, b) => a.last_timestamp.getTime() - b.last_timestamp.getTime());
-      let reducedDates = data.reduce((prev, curr) => {
-        if (prev.length === 0) {
-          prev.push({
-            online: true,
-            start_timestamp: curr.last_timestamp,
-            last_timestamp: curr.last_timestamp
-          });
-        } else if ((curr.last_timestamp.getTime() - prev[0].last_timestamp.getTime()) < 5400000) { // 90 minutes threshold
-          prev[0].last_timestamp = curr.last_timestamp;
-        } else {
-          prev.unshift({
-            online: true,
-            start_timestamp: curr.last_timestamp,
-            last_timestamp: curr.last_timestamp
-          })
+      data = data.map(val => (
+        {
+          online: true,
+          start_timestamp: new Date(val.start_timestamp),
+          last_timestamp: new Date(val.last_timestamp)
         }
-        return prev;
-      }, []);
+      ));
+      data.sort((a, b) => b.last_timestamp.getTime() - a.last_timestamp.getTime());
       let filledDates = [];
-      for (var j = reducedDates.length - 1; j >= 0; j--) {
-        filledDates.unshift(reducedDates[j]);
+      for (var j = data.length - 1; j >= 0; j--) {
+        filledDates.unshift(data[j]);
         if (j > 0) {
           filledDates.unshift({
             online: false,
-            start_timestamp: reducedDates[j].last_timestamp,
-            last_timestamp: reducedDates[j - 1].start_timestamp
+            start_timestamp: data[j].last_timestamp,
+            last_timestamp: data[j - 1].start_timestamp
           });
         }
       }
@@ -852,7 +840,7 @@
         })
         .then(function (data) {
           if (cutoff !== undefined) {
-            data = data.filter(val => new Date(val.timestamp).getTime() > cutoff);
+            data = data.filter(val => new Date(val.last_timestamp).getTime() > cutoff);
           }
           appendHeartbeat(data);
         })
