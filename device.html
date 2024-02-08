@@ -85,302 +85,49 @@
     </div>
     <p></p>
 
-    <h4 id="dl-tput-plot-label">Downlink throughput</h4>
-    <div id="dl-tput-plot"></div>
-    <p></p>
+    <div id="dl-tput-plot-block">
+      <h4 id="dl-tput-plot-label">Downlink throughput</h4>
+      <div id="dl-tput-plot"></div>
+      <p></p>
 
-    <h4 id="dl-tput-boxplot-label">Hourly downlink throughput</h4>
-    <div class="accordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="dl-tput-boxplot-iperf-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dl-tput-boxplot-iperf-eth0-collapse" aria-expanded="false" aria-controls="dl-tput-boxplot-iperf-eth0-collapse">
-            iperf eth0
-          </button>
-        </h2>
-        <div id="dl-tput-boxplot-iperf-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="dl-tput-boxplot-iperf-eth0-label">
-          <div class="accordion-body">
-            <div id="dl-tput-boxplot-iperf-eth0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="dl-tput-boxplot-iperf-wlan0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dl-tput-boxplot-iperf-wlan0-collapse" aria-expanded="false" aria-controls="dl-tput-boxplot-iperf-wlan0-collapse">
-            iperf wlan0
-          </button>
-        </h2>
-        <div id="dl-tput-boxplot-iperf-wlan0-collapse" class="accordion-collapse collapse" aria-labelledby="dl-tput-boxplot-iperf-wlan0-label">
-          <div class="accordion-body">
-            <div id="dl-tput-boxplot-iperf-wlan0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="dl-tput-boxplot-iperf-wlan1-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dl-tput-boxplot-iperf-wlan1-collapse" aria-expanded="false" aria-controls="dl-tput-boxplot-iperf-wlan1-collapse">
-            iperf wlan1
-          </button>
-        </h2>
-        <div id="dl-tput-boxplot-iperf-wlan1-collapse" class="accordion-collapse collapse" aria-labelledby="dl-tput-boxplot-iperf-wlan1-label">
-          <div class="accordion-body">
-            <div id="dl-tput-boxplot-iperf-wlan1"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="dl-tput-boxplot-speedtest-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dl-tput-boxplot-speedtest-eth0-collapse" aria-expanded="false" aria-controls="dl-tput-boxplot-speedtest-eth0-collapse">
-            Ookla eth0
-          </button>
-        </h2>
-        <div id="dl-tput-boxplot-speedtest-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="dl-tput-boxplot-speedtest-eth0-label">
-          <div class="accordion-body">
-            <div id="dl-tput-boxplot-speedtest-eth0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="dl-tput-boxplot-speedtest-wlan0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dl-tput-boxplot-speedtest-wlan0-collapse" aria-expanded="false" aria-controls="dl-tput-boxplot-speedtest-wlan0-collapse">
-            Ookla wlan0
-          </button>
-        </h2>
-        <div id="dl-tput-boxplot-speedtest-wlan0-collapse" class="accordion-collapse collapse" aria-labelledby="dl-tput-boxplot-speedtest-wlan0-label">
-          <div class="accordion-body">
-            <div id="dl-tput-boxplot-speedtest-wlan0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="dl-tput-boxplot-speedtest-wlan1-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dl-tput-boxplot-speedtest-wlan1-collapse" aria-expanded="false" aria-controls="dl-tput-boxplot-speedtest-wlan1-collapse">
-            Ookla wlan1
-          </button>
-        </h2>
-        <div id="dl-tput-boxplot-speedtest-wlan1-collapse" class="accordion-collapse collapse" aria-labelledby="dl-tput-boxplot-speedtest-wlan1-label">
-          <div class="accordion-body">
-            <div id="dl-tput-boxplot-speedtest-wlan1"></div>
-          </div>
-        </div>
-      </div>
+      <h4 id="dl-tput-boxplot-label">Hourly downlink throughput</h4>
+      <div class="accordion" id="dl-tput-boxplot"></div>
+      <p></p>
     </div>
-    <p></p>
 
-    <h4 id="ul-tput-plot-label">Uplink throughput</h4>
-    <div id="ul-tput-plot"></div>
-    <p></p>
+    <div id="ul-tput-plot-block">
+      <h4 id="ul-tput-plot-label">Uplink throughput</h4>
+      <div id="ul-tput-plot"></div>
+      <p></p>
 
-    <h4 id="ul-tput-boxplot-label">Hourly uplink throughput</h4>
-    <div class="accordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="ul-tput-boxplot-iperf-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ul-tput-boxplot-iperf-eth0-collapse" aria-expanded="false" aria-controls="ul-tput-boxplot-iperf-eth0-collapse">
-            iperf eth0
-          </button>
-        </h2>
-        <div id="ul-tput-boxplot-iperf-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="ul-tput-boxplot-iperf-eth0-label">
-          <div class="accordion-body">
-            <div id="ul-tput-boxplot-iperf-eth0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="ul-tput-boxplot-iperf-wlan0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ul-tput-boxplot-iperf-wlan0-collapse" aria-expanded="false" aria-controls="ul-tput-boxplot-iperf-wlan0-collapse">
-            iperf wlan0
-          </button>
-        </h2>
-        <div id="ul-tput-boxplot-iperf-wlan0-collapse" class="accordion-collapse collapse" aria-labelledby="ul-tput-boxplot-iperf-wlan0-label">
-          <div class="accordion-body">
-            <div id="ul-tput-boxplot-iperf-wlan0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="ul-tput-boxplot-iperf-wlan1-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ul-tput-boxplot-iperf-wlan1-collapse" aria-expanded="false" aria-controls="ul-tput-boxplot-iperf-wlan1-collapse">
-            iperf wlan1
-          </button>
-        </h2>
-        <div id="ul-tput-boxplot-iperf-wlan1-collapse" class="accordion-collapse collapse" aria-labelledby="ul-tput-boxplot-iperf-wlan1-label">
-          <div class="accordion-body">
-            <div id="ul-tput-boxplot-iperf-wlan1"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="ul-tput-boxplot-speedtest-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ul-tput-boxplot-speedtest-eth0-collapse" aria-expanded="false" aria-controls="ul-tput-boxplot-speedtest-eth0-collapse">
-            Ookla eth0
-          </button>
-        </h2>
-        <div id="ul-tput-boxplot-speedtest-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="ul-tput-boxplot-speedtest-eth0-label">
-          <div class="accordion-body">
-            <div id="ul-tput-boxplot-speedtest-eth0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="ul-tput-boxplot-speedtest-wlan0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ul-tput-boxplot-speedtest-wlan0-collapse" aria-expanded="false" aria-controls="ul-tput-boxplot-speedtest-wlan0-collapse">
-            Ookla wlan0
-          </button>
-        </h2>
-        <div id="ul-tput-boxplot-speedtest-wlan0-collapse" class="accordion-collapse collapse" aria-labelledby="ul-tput-boxplot-speedtest-wlan0-label">
-          <div class="accordion-body">
-            <div id="ul-tput-boxplot-speedtest-wlan0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="ul-tput-boxplot-speedtest-wlan1-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ul-tput-boxplot-speedtest-wlan1-collapse" aria-expanded="false" aria-controls="ul-tput-boxplot-speedtest-wlan1-collapse">
-            Ookla wlan1
-          </button>
-        </h2>
-        <div id="ul-tput-boxplot-speedtest-wlan1-collapse" class="accordion-collapse collapse" aria-labelledby="ul-tput-boxplot-speedtest-wlan1-label">
-          <div class="accordion-body">
-            <div id="ul-tput-boxplot-speedtest-wlan1"></div>
-          </div>
-        </div>
-      </div>
+      <h4 id="ul-tput-boxplot-label">Hourly uplink throughput</h4>
+      <div class="accordion" id="ul-tput-boxplot"></div>
+      <p></p>
     </div>
-    <p></p>
 
-    <h4 id="latency-plot-label">Latency</h4>
-    <div id="latency-plot"></div>
-    <p></p>
+    <div id="latency-plot-block">
+      <h4 id="latency-plot-label">Latency</h4>
+      <div id="latency-plot"></div>
+      <p></p>
 
-    <h4 id="latency-idle-boxplot-label">Hourly idle latency</h4>
-    <div class="accordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-idle-boxplot-speedtest-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-idle-boxplot-speedtest-eth0-collapse" aria-expanded="false" aria-controls="latency-idle-boxplot-speedtest-eth0-collapse">
-            Ookla eth0
-          </button>
-        </h2>
-        <div id="latency-idle-boxplot-speedtest-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="latency-idle-boxplot-speedtest-eth0-label">
-          <div class="accordion-body">
-            <div id="latency-idle-boxplot-speedtest-eth0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-idle-boxplot-speedtest-wlan0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-idle-boxplot-speedtest-wlan0-collapse" aria-expanded="false" aria-controls="latency-idle-boxplot-speedtest-wlan0-collapse">
-            Ookla wlan0
-          </button>
-        </h2>
-        <div id="latency-idle-boxplot-speedtest-wlan0-collapse" class="accordion-collapse collapse" aria-labelledby="latency-idle-boxplot-speedtest-wlan0-label">
-          <div class="accordion-body">
-            <div id="latency-idle-boxplot-speedtest-wlan0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-idle-boxplot-speedtest-wlan1-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-idle-boxplot-speedtest-wlan1-collapse" aria-expanded="false" aria-controls="latency-idle-boxplot-speedtest-wlan1-collapse">
-            Ookla wlan1
-          </button>
-        </h2>
-        <div id="latency-idle-boxplot-speedtest-wlan1-collapse" class="accordion-collapse collapse" aria-labelledby="latency-idle-boxplot-speedtest-wlan1-label">
-          <div class="accordion-body">
-            <div id="latency-idle-boxplot-speedtest-wlan1"></div>
-          </div>
-        </div>
-      </div>
+      <h4 id="latency-idle-boxplot-label">Hourly latency</h4>
+      <div class="accordion" id="latency-boxplot"></div>
+      <p></p>
     </div>
-    <p></p>
 
-    <h4 id="latency-dlload-boxplot-label">Hourly DL-load latency</h4>
-    <div class="accordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-dlload-boxplot-speedtest-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-dlload-boxplot-speedtest-eth0-collapse" aria-expanded="false" aria-controls="latency-dlload-boxplot-speedtest-eth0-collapse">
-            Ookla eth0
-          </button>
-        </h2>
-        <div id="latency-dlload-boxplot-speedtest-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="latency-dlload-boxplot-speedtest-eth0-label">
-          <div class="accordion-body">
-            <div id="latency-dlload-boxplot-speedtest-eth0"></div>
-          </div>
-        </div>
+    <div id="wifi-plot-block">
+      <h4 id="wifi-rssi-plot-label">Wi-Fi RSSI</h4>
+      <div id="wifi-rssi-plot"></div>
+      <div class="accordion" id="wifi-rssi-boxplot"></div>
+      <p></p>
+
+      <div id="wifi-overlap-plot-block">
+        <h4 id="wifi-overlap-plot-label">Number of Wi-Fi APs overlapping the connected AP</h4>
+        <div id="wifi-overlap-plot"></div>
+        <div class="accordion" id="wifi-overlap-boxplot"></div>
       </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-dlload-boxplot-speedtest-wlan0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-dlload-boxplot-speedtest-wlan0-collapse" aria-expanded="false" aria-controls="latency-dlload-boxplot-speedtest-wlan0-collapse">
-            Ookla wlan0
-          </button>
-        </h2>
-        <div id="latency-dlload-boxplot-speedtest-wlan0-collapse" class="accordion-collapse collapse" aria-labelledby="latency-dlload-boxplot-speedtest-wlan0-label">
-          <div class="accordion-body">
-            <div id="latency-dlload-boxplot-speedtest-wlan0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-dlload-boxplot-speedtest-wlan1-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-dlload-boxplot-speedtest-wlan1-collapse" aria-expanded="false" aria-controls="latency-dlload-boxplot-speedtest-wlan1-collapse">
-            Ookla wlan1
-          </button>
-        </h2>
-        <div id="latency-dlload-boxplot-speedtest-wlan1-collapse" class="accordion-collapse collapse" aria-labelledby="latency-dlload-boxplot-speedtest-wlan1-label">
-          <div class="accordion-body">
-            <div id="latency-dlload-boxplot-speedtest-wlan1"></div>
-          </div>
-        </div>
-      </div>
+      <p></p>
     </div>
-    <p></p>
-
-    <h4 id="latency-ulload-boxplot-label">Hourly UL-load latency</h4>
-    <div class="accordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-ulload-boxplot-speedtest-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-ulload-boxplot-speedtest-eth0-collapse" aria-expanded="false" aria-controls="latency-ulload-boxplot-speedtest-eth0-collapse">
-            Ookla eth0
-          </button>
-        </h2>
-        <div id="latency-ulload-boxplot-speedtest-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="latency-ulload-boxplot-speedtest-eth0-label">
-          <div class="accordion-body">
-            <div id="latency-ulload-boxplot-speedtest-eth0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-ulload-boxplot-speedtest-wlan0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-ulload-boxplot-speedtest-wlan0-collapse" aria-expanded="false" aria-controls="latency-ulload-boxplot-speedtest-wlan0-collapse">
-            Ookla wlan0
-          </button>
-        </h2>
-        <div id="latency-ulload-boxplot-speedtest-wlan0-collapse" class="accordion-collapse collapse" aria-labelledby="latency-ulload-boxplot-speedtest-wlan0-label">
-          <div class="accordion-body">
-            <div id="latency-ulload-boxplot-speedtest-wlan0"></div>
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-ulload-boxplot-speedtest-wlan1-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-ulload-boxplot-speedtest-wlan1-collapse" aria-expanded="false" aria-controls="latency-ulload-boxplot-speedtest-wlan1-collapse">
-            Ookla wlan1
-          </button>
-        </h2>
-        <div id="latency-ulload-boxplot-speedtest-wlan1-collapse" class="accordion-collapse collapse" aria-labelledby="latency-ulload-boxplot-speedtest-wlan1-label">
-          <div class="accordion-body">
-            <div id="latency-ulload-boxplot-speedtest-wlan1"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p></p>
-
-    <h4 id="wifi-rssi-plot-label">Wi-Fi RSSI</h4>
-    <div id="wifi-rssi-plot"></div>
-    <p></p>
-
-    <h4 id="wifi-overlap-plot-label">Number of APs overlapping the connected AP</h4>
-    <div id="wifi-overlap-plot"></div>
-    <p></p>
 
     <h4 id="heartbeat-label">Heartbeats</h4>
     <table class="table table-striped-columns">
@@ -397,10 +144,10 @@
   </div>
   <script type="module">
     import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-    function appendData(data, yLabel, yVal, strokeVal, id, maxY) {
+    function appendLine(data, yLabel, yVal, strokeVal, id, maxY, minY=0) {
       let domainY;
       if (maxY !== undefined) {
-        domainY = [0, maxY];
+        domainY = [minY, maxY];
       }
       const plot = Plot.plot({
         x: {
@@ -422,7 +169,8 @@
               x: val => new Date(val.timestamp),
               y: yVal,
               sort: "timestamp",
-              stroke: strokeVal
+              stroke: strokeVal,
+              tip: true
             }
           )
         ]
@@ -431,10 +179,10 @@
       div.append(plot);
     }
 
-    function appendDataWifi(data, yLabel, yVal, strokeValLine, strokeValDot, id, maxY) {
+    function appendLineDot(data, yLabel, yVal, strokeValLine, strokeValDot, id, maxY, minY=0) {
       let domainY;
       if (maxY !== undefined) {
-        domainY = [0, maxY];
+        domainY = [minY, maxY];
       }
       const plot = Plot.plot({
         x: {
@@ -464,7 +212,8 @@
               x: val => new Date(val.timestamp),
               y: yVal,
               sort: "timestamp",
-              stroke: strokeValDot
+              stroke: strokeValDot,
+              tip: true
             }
           )
         ]
@@ -473,10 +222,12 @@
       div.append(plot);
     }
 
-    function appendBoxplot(data, yLabel, yVal, id, maxY) {
+    function appendAccordionBoxplot(data, yLabel, yVal, id, accordionId, accordionTitle, maxY, minY=0) {
+      let div = document.createElement('div');
+      div.className = "accordion-item"
       let domainY;
       if (maxY !== undefined) {
-        domainY = [0, maxY];
+        domainY = [minY, maxY];
       }
       const plot = Plot.plot({
         y: {
@@ -491,11 +242,25 @@
         },
         marks: [
           Plot.ruleY([0]),
-          Plot.boxY(data, {fx: val => new Date(val.timestamp).getHours(), y: yVal})
+          Plot.boxY(data, {
+            fx: val => new Date(val.timestamp).getHours(),
+            y: yVal
+          })
         ]
       })
-      const div = document.querySelector(id);
-      div.append(plot);
+      div.innerHTML =
+`<h2 class="accordion-header" id="${id}-label">
+  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${id}-collapse" aria-expanded="false" aria-controls="${id}-collapse">
+    ${accordionTitle}
+  </button>
+</h2>
+<div id="${id}-collapse" class="accordion-collapse collapse" aria-labelledby="${id}-label">
+  <div class="accordion-body">
+    ${plot.outerHTML}
+  </div>
+</div>`;
+
+      document.getElementById(accordionId).appendChild(div);
     }
 
     function appendHeartbeat(data) {
@@ -530,8 +295,38 @@
     // Hardcoded dict
     const dataFilterDict = {
       "8E-51-F9-59-3F-8D": new Date("2024-01-23T12:00-0600").getTime(),
+      // "D8-3A-DD-41-AA-94": new Date("2024-01-22T12:00-0600").getTime(),
       "D8-3A-DD-4C-C5-B5": new Date("2024-01-27T00:00-0600").getTime(),
-      "D8-3A-DD-4C-C5-CE": new Date("2024-01-24T00:00-0600").getTime()
+      "D8-3A-DD-4C-C5-CE": new Date("2024-01-24T00:00-0600").getTime(),
+      "DC-A6-32-1D-A4-E0": new Date("2024-01-10T00:00-0500").getTime()
+    }
+    const wifiConnDict = {
+      "D8-3A-DD-41-AA-94": "3C:37:86:B1:4D:E3"
+    }
+    const testTypeDict = {
+      "iperf": "iperf",
+      "speedtest": "Ookla Speedtest",
+      "idle": "idle",
+      "dl_load": "DL-load",
+      "ul_load": "UL-load"
+    }
+
+    const isOverlap = function(a, b) {
+      let center_freq_a = (a.center_freq1_mhz > 0) ? a.center_freq1_mhz : a.center_freq0_mhz;
+      let center_freq_b = (b.center_freq1_mhz > 0) ? b.center_freq1_mhz : b.center_freq0_mhz;
+      let min_freq_a = center_freq_a - (a.bw_mhz / 2);
+      let min_freq_b = center_freq_b - (b.bw_mhz / 2);
+      let max_freq_a = center_freq_a + (a.bw_mhz / 2);
+      let max_freq_b = center_freq_b + (b.bw_mhz / 2);
+      return (min_freq_a <= max_freq_b) && (min_freq_b <= max_freq_a);
+    }
+
+    const dbmToW = function(powDbm) {
+      return Math.pow(10, (powDbm / 10)) / 1000;
+    }
+
+    const wToDbm = function(powW) {
+      return 10 * Math.log10(1000 * powW);
     }
 
     if(window.location.hash) {
@@ -571,7 +366,7 @@
           let dlData = data.filter(val => val.direction === "downlink");
           let maxTputDl = dlData.reduce((acc, curr) => ((curr.max_tput_mbps > acc) ? curr.max_tput_mbps : acc), 0)
           if (dlData.length > 0) {
-            appendData(
+            appendLine(
               dlData,
               "Throughput (Mbps)",
               "max_tput_mbps",
@@ -579,78 +374,34 @@
               "#dl-tput-plot",
               maxTputDl
             );
-            let dlIperfEth0 = dlData.filter(val => val.type === "iperf"
-              && val.interface === "eth0");
-            if (dlIperfEth0.length > 0) {
-              appendBoxplot(
-                dlIperfEth0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#dl-tput-boxplot-iperf-eth0",
-                maxTputDl
-              );
+            // Iterate for different test types and interfaces
+            for (let type of ["iperf", "speedtest"]) {
+              for (let iface of ["eth0", "wlan0", "wlan1"]) {
+                let filteredData = dlData.filter(val => val.type === type
+                  && val.interface === iface);
+                // Check if filtered data is not empty
+                if (filteredData.length > 0) {
+                  appendAccordionBoxplot(
+                    filteredData,
+                    "Throughput (Mbps)",
+                    "max_tput_mbps",
+                    `dl-tput-boxplot-${type}-${iface}`,
+                    `dl-tput-boxplot`,
+                    `${testTypeDict[type]} ${iface}`,
+                    maxTputDl
+                  );
+                }
+              }
             }
-            let dlIperfWlan0 = dlData.filter(val => val.type === "iperf"
-              && val.interface === "wlan0");
-            if (dlIperfWlan0.length > 0) {
-              appendBoxplot(
-                dlIperfWlan0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#dl-tput-boxplot-iperf-wlan0",
-                maxTputDl
-              );
-            }
-            let dlIperfWlan1 = dlData.filter(val => val.type === "iperf"
-              && val.interface === "wlan1");
-            if (dlIperfWlan1.length > 0) {
-              appendBoxplot(
-                dlIperfWlan1,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#dl-tput-boxplot-iperf-wlan1",
-                maxTputDl
-              );
-            }
-            let dlSpeedtestEth0 = dlData.filter(val => val.type === "speedtest"
-              && val.interface === "eth0");
-            if (dlSpeedtestEth0.length > 0) {
-              appendBoxplot(
-                dlSpeedtestEth0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#dl-tput-boxplot-speedtest-eth0",
-                maxTputDl
-              );
-            }
-            let dlSpeedtestWlan0 = dlData.filter(val => val.type === "speedtest"
-              && val.interface === "wlan0");
-            if (dlSpeedtestWlan0.length > 0) {
-              appendBoxplot(
-                dlSpeedtestWlan0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#dl-tput-boxplot-speedtest-wlan0",
-                maxTputDl
-              );
-            }
-            let dlSpeedtestWlan1 = dlData.filter(val => val.type === "speedtest"
-              && val.interface === "wlan1");
-            if (dlSpeedtestWlan1.length > 0) {
-              appendBoxplot(
-                dlSpeedtestWlan1,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#dl-tput-boxplot-speedtest-wlan1",
-                maxTputDl
-              );
-            }
+          } else {
+            const divLabel = document.querySelector(`#dl-tput-plot-block`);
+            divLabel.style.display = "none";
           }
 
           let ulData = data.filter(val => val.direction === "uplink");
           let maxTputUl = ulData.reduce((acc, curr) => ((curr.max_tput_mbps > acc) ? curr.max_tput_mbps : acc), 0)
           if (ulData.length > 0) {
-            appendData(
+            appendLine(
               ulData,
               "Throughput (Mbps)",
               "max_tput_mbps",
@@ -658,72 +409,28 @@
               "#ul-tput-plot",
               maxTputUl
             );
-            let ulIperfEth0 = ulData.filter(val => val.type === "iperf"
-              && val.interface === "eth0");
-            if (ulIperfEth0.length > 0) {
-              appendBoxplot(
-                ulIperfEth0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#ul-tput-boxplot-iperf-eth0",
-                maxTputUl
-              );
+            // Iterate for different test types and interfaces
+            for (let type of ["iperf", "speedtest"]) {
+              for (let iface of ["eth0", "wlan0", "wlan1"]) {
+                let filteredData = ulData.filter(val => val.type === type
+                  && val.interface === iface);
+                // Check if filtered data is not empty
+                if (filteredData.length > 0) {
+                  appendAccordionBoxplot(
+                    filteredData,
+                    "Throughput (Mbps)",
+                    "max_tput_mbps",
+                    `ul-tput-boxplot-${type}-${iface}`,
+                    `ul-tput-boxplot`,
+                    `${testTypeDict[type]} ${iface}`,
+                    maxTputUl
+                  );
+                }
+              }
             }
-            let ulIperfWlan0 = ulData.filter(val => val.type === "iperf"
-              && val.interface === "wlan0");
-            if (ulIperfWlan0.length > 0) {
-              appendBoxplot(
-                ulIperfWlan0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#ul-tput-boxplot-iperf-wlan0",
-                maxTputUl
-              );
-            }
-            let ulIperfWlan1 = ulData.filter(val => val.type === "iperf"
-              && val.interface === "wlan1");
-            if (ulIperfWlan1.length > 0) {
-              appendBoxplot(
-                ulIperfWlan1,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#ul-tput-boxplot-iperf-wlan1",
-                maxTputUl
-              );
-            }
-            let ulSpeedtestEth0 = ulData.filter(val => val.type === "speedtest"
-              && val.interface === "eth0");
-            if (ulSpeedtestEth0.length > 0) {
-              appendBoxplot(
-                ulSpeedtestEth0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#ul-tput-boxplot-speedtest-eth0",
-                maxTputUl
-              );
-            }
-            let ulSpeedtestWlan0 = ulData.filter(val => val.type === "speedtest"
-              && val.interface === "wlan0");
-            if (ulSpeedtestWlan0.length > 0) {
-              appendBoxplot(
-                ulSpeedtestWlan0,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#ul-tput-boxplot-speedtest-wlan0",
-                maxTputUl
-              );
-            }
-            let ulSpeedtestWlan1 = ulData.filter(val => val.type === "speedtest"
-              && val.interface === "wlan1");
-            if (ulSpeedtestWlan1.length > 0) {
-              appendBoxplot(
-                ulSpeedtestWlan1,
-                "Throughput (Mbps)",
-                "max_tput_mbps",
-                "#ul-tput-boxplot-speedtest-wlan1",
-                maxTputUl
-              );
-            }
+          } else {
+            const divLabel = document.querySelector(`#ul-tput-plot-block`);
+            divLabel.style.display = "none";
           }
         })
         .catch(function (err) {
@@ -738,10 +445,11 @@
           if (cutoff !== undefined) {
             data = data.filter(val => new Date(val.timestamp).getTime() > cutoff);
           }
+          // Remove highly outlier latency values
           data = data.filter(val => val.latency_ms < 5000);
           if (data.length > 0) {
             let maxLat = data.reduce((acc, curr) => ((curr.latency_ms > acc) ? curr.latency_ms : acc), 0)
-            appendData(
+            appendLine(
               data,
               "Latency (ms)",
               "latency_ms",
@@ -749,128 +457,33 @@
               "#latency-plot",
               maxLat
             );
-            let idleLatEth0 = data.filter(val => val.type === "speedtest_idle"
-              && val.interface === "eth0");
-            if (idleLatEth0.length > 0) {
-              appendBoxplot(
-                idleLatEth0,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-idle-boxplot-speedtest-eth0",
-                maxLat
-              );
+            // Iterate for different test types and interfaces
+            for (let type of ["idle", "dl_load", "ul_load"]) {
+              for (let iface of ["eth0", "wlan0", "wlan1"]) {
+                let filteredData = data.filter(val => val.type === `speedtest_${type}`
+                  && val.interface === iface);
+                // Check if filtered data is not empty
+                if (filteredData.length > 0) {
+                  appendAccordionBoxplot(
+                    filteredData,
+                    "Latency (ms)",
+                    "latency_ms",
+                    `latency-${type.replace(/_/g, "")}-boxplot-speedtest-${iface}`,
+                    `latency-boxplot`,
+                    `Ookla Speedtest ${testTypeDict[type]} ${iface}`,
+                    maxLat
+                  );
+                }
+              }
             }
-            let dlloadLatEth0 = data.filter(val => val.type === "speedtest_dl_load"
-              && val.interface === "eth0");
-            if (dlloadLatEth0.length > 0) {
-              appendBoxplot(
-                dlloadLatEth0,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-dlload-boxplot-speedtest-eth0",
-                maxLat
-              );
-            }
-            let ulloadEth0 = data.filter(val => val.type === "speedtest_ul_load"
-              && val.interface === "eth0");
-            if (ulloadEth0.length > 0) {
-              appendBoxplot(
-                ulloadEth0,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-ulload-boxplot-speedtest-eth0",
-                maxLat
-              );
-            }
-            let idleLatWlan0 = data.filter(val => val.type === "speedtest_idle"
-              && val.interface === "wlan0");
-            if (idleLatWlan0.length > 0) {
-              appendBoxplot(
-                idleLatWlan0,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-idle-boxplot-speedtest-wlan0",
-                maxLat
-              );
-            }
-            let dlloadLatWlan0 = data.filter(val => val.type === "speedtest_dl_load"
-              && val.interface === "wlan0");
-            if (dlloadLatWlan0.length > 0) {
-              appendBoxplot(
-                dlloadLatWlan0,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-dlload-boxplot-speedtest-wlan0",
-                maxLat
-              );
-            }
-            let ulloadWlan0 = data.filter(val => val.type === "speedtest_ul_load"
-              && val.interface === "wlan0");
-            if (ulloadWlan0.length > 0) {
-              appendBoxplot(
-                ulloadWlan0,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-ulload-boxplot-speedtest-wlan0",
-                maxLat
-              );
-            }
-            let idleLatWlan1 = data.filter(val => val.type === "speedtest_idle"
-              && val.interface === "wlan1");
-            if (idleLatWlan1.length > 0) {
-              appendBoxplot(
-                idleLatWlan1,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-idle-boxplot-speedtest-wlan1",
-                maxLat
-              );
-            }
-            let dlloadLatWlan1 = data.filter(val => val.type === "speedtest_dl_load"
-              && val.interface === "wlan1");
-            if (dlloadLatWlan1.length > 0) {
-              appendBoxplot(
-                dlloadLatWlan1,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-dlload-boxplot-speedtest-wlan1",
-                maxLat
-              );
-            }
-            let ulloadWlan1 = data.filter(val => val.type === "speedtest_ul_load"
-              && val.interface === "wlan1");
-            if (ulloadWlan1.length > 0) {
-              appendBoxplot(
-                ulloadWlan1,
-                "Latency (ms)",
-                "latency_ms",
-                "#latency-ulload-boxplot-speedtest-wlan1",
-                maxLat
-              );
-            }
+          } else {
+            const divLabel = document.querySelector("#latency-plot-block");
+            divLabel.style.display = "none";
           }
         })
         .catch(function (err) {
           console.log('error: ' + err);
         });
-
-      const isOverlap = function(a, b) {
-        let center_freq_a = (a.center_freq1_mhz > 0) ? a.center_freq1_mhz : a.center_freq0_mhz;
-        let center_freq_b = (b.center_freq1_mhz > 0) ? b.center_freq1_mhz : b.center_freq0_mhz;
-        let min_freq_a = center_freq_a - (a.bw_mhz / 2);
-        let min_freq_b = center_freq_b - (b.bw_mhz / 2);
-        let max_freq_a = center_freq_a + (a.bw_mhz / 2);
-        let max_freq_b = center_freq_b + (b.bw_mhz / 2);
-        return (min_freq_a <= max_freq_b) && (min_freq_b <= max_freq_a);
-      }
-
-      const dbmToW = function(powDbm) {
-        return Math.pow(10, (powDbm / 10)) / 1000;
-      }
-
-      const wToDbm = function(powW) {
-        return 10 * Math.log10(1000 * powW);
-      }
 
       fetch(`wifi_scan_${deviceId}.json`)
         .then(function (response) {
@@ -880,53 +493,149 @@
           if (cutoff !== undefined) {
             data = data.filter(val => new Date(val.timestamp).getTime() > cutoff);
           }
+          if (wifiConnDict[deviceId]) {
+            data = data.map(val => {
+              if (val.connected === false && val.bssid === wifiConnDict[deviceId]) {
+                val.connected = true;
+              }
+              return val
+            });
+          }
           let dataConnected = data.filter(val => val.connected === true);
-          let dataOverlap = data.filter(val => {
-            if (val.connected === true) {
-              return false;
-            }
-            let conn = dataConnected.find(curr => curr.test_uuid === val.test_uuid);
-            if (conn) {
-              return isOverlap(val, conn);
-            } else {
-              return false;
-            }
-          });
-          let overlapGrouped = Object.values(Object.groupBy(dataOverlap, ({ test_uuid }) => test_uuid));
-          let overlapReduced = overlapGrouped.map(val => ({
-            timestamp: val[0].timestamp,
-            rssi_dbm: wToDbm(val.reduce((acc, cur) => acc + dbmToW(cur.rssi_dbm), 0) / val.length),
-            count: val.length,
-            freq_group: (val[0]["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
-            state: "Overlaps (mean)"
-          }));
 
           if (dataConnected.length > 0) {
             dataConnected = dataConnected.map(obj => ({
               ...obj,
-              freq_group: (obj["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
+              freq_group: (obj["primary_freq_mhz"] > 6000) ? "6 GHz" : (obj["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
               state: "Connected"
             }));
+            let maxRssi = dataConnected.reduce((acc, cur) => ((cur.rssi_dbm > acc) ? cur.rssi_dbm : acc), -200);
+            let minRssi = dataConnected.reduce((acc, cur) => ((cur.rssi_dbm < acc) ? cur.rssi_dbm : acc), 0);
+            // console.log(minRssi, maxRssi)
+
+            // Count overlaps
+            let dataOverlap = data.filter(val => {
+              if (val.connected === true) {
+                return false;
+              }
+              let conn = dataConnected.find(curr => curr.test_uuid === val.test_uuid);
+              if (conn) {
+                return isOverlap(val, conn);
+              } else {
+                return false;
+              }
+            });
+            let overlapGrouped = Object.groupBy(dataOverlap, ({ test_uuid }) => test_uuid);
+            delete overlapGrouped.unknown;
+            let overlapReduced = Object.values(overlapGrouped).map(val => ({
+              timestamp: val[0].timestamp,
+              rssi_dbm: wToDbm(val.reduce((acc, cur) => acc + dbmToW(cur.rssi_dbm), 0) / val.length),
+              count: val.length,
+              freq_group: (val[0]["primary_freq_mhz"] > 6000) ? "6 GHz" : (val[0]["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
+              state: "Overlaps (mean)"
+            }));
+            if (overlapReduced.length > 0) {
+              // Recalculate max and min RSSI
+              maxRssi = overlapReduced.reduce((acc, cur) => ((cur.rssi_dbm > acc) ? cur.rssi_dbm : acc), maxRssi);
+              minRssi = overlapReduced.reduce((acc, cur) => ((cur.rssi_dbm < acc) ? cur.rssi_dbm : acc), minRssi);
+              // console.log(minRssi, maxRssi)
+            }
+
+            let conn2_4 = dataConnected.filter(val => val.freq_group === "2.4 GHz");
+            if (conn2_4.length > 0) {
+              appendAccordionBoxplot(
+                conn2_4,
+                "RSSI (dBm)",
+                "rssi_dbm",
+                "wifi-rssi-conn-boxplot-2_4",
+                "wifi-rssi-boxplot",
+                "Hourly Wi-Fi RSSI (Connected AP 2.4 GHz)",
+                maxRssi,
+                minRssi
+              );
+            }
+            let conn5 = dataConnected.filter(val => val.freq_group === "5 GHz");
+            if (conn5.length > 0) {
+              appendAccordionBoxplot(
+                conn5,
+                "RSSI (dBm)",
+                "rssi_dbm",
+                "wifi-rssi-conn-boxplot-5",
+                "wifi-rssi-boxplot",
+                "Hourly Wi-Fi RSSI (Connected AP 5 GHz)",
+                maxRssi,
+                minRssi
+              );
+            }
+
             if (overlapReduced.length > 0) {
               dataConnected = dataConnected.concat(overlapReduced);
-              appendData(
+              appendLineDot(
                 overlapReduced,
                 "# overlaps",
                 "count",
                 "#F00",
+                "freq_group",
                 "#wifi-overlap-plot"
               );
+              let overlapReduced2_4 = overlapReduced.filter(val => val.freq_group === "2.4 GHz");
+              if (overlapReduced2_4.length > 0) {
+                appendAccordionBoxplot(
+                  overlapReduced2_4,
+                  "# overlaps",
+                  "count",
+                  "wifi-overlap-boxplot-2_4",
+                  "wifi-overlap-boxplot",
+                  "Hourly count of overlapping APs (2.4 GHz)"
+                );
+                appendAccordionBoxplot(
+                  overlapReduced2_4,
+                  "RSSI (dBm)",
+                  "rssi_dbm",
+                  "wifi-rssi-overlap-boxplot-2_4",
+                  "wifi-rssi-boxplot",
+                  "Hourly Wi-Fi RSSI (Overlapping APs 2.4 GHz)",
+                  maxRssi,
+                  minRssi
+                );
+              }
+              let overlapReduced5 = overlapReduced.filter(val => val.freq_group === "5 GHz");
+              if (overlapReduced5.length > 0) {
+                appendAccordionBoxplot(
+                  overlapReduced5,
+                  "# overlaps",
+                  "count",
+                  "wifi-overlap-boxplot-5",
+                  "wifi-overlap-boxplot",
+                  "Hourly count of overlapping APs (5 GHz)"
+                );
+                appendAccordionBoxplot(
+                  overlapReduced5,
+                  "RSSI (dBm)",
+                  "rssi_dbm",
+                  "wifi-rssi-overlap-boxplot-5",
+                  "wifi-rssi-boxplot",
+                  "Hourly Wi-Fi RSSI (Overlapping APs 5 GHz)",
+                  maxRssi,
+                  minRssi
+                );
+              }
+            } else {
+              const divLabel = document.querySelector("#wifi-overlap-plot-block");
+              divLabel.style.display = "none";
             }
-            appendDataWifi(
+            appendLineDot(
               dataConnected,
               "RSSI (dBm)",
               "rssi_dbm",
               "state",
               (val => `${val.state} ${val.freq_group}`),
-              "#wifi-rssi-plot"
+              "#wifi-rssi-plot",
+              maxRssi,
+              minRssi
             );
           } else {
-            const divLabel = document.querySelector("#wifi-rssi-plot-label");
+            const divLabel = document.querySelector("#wifi-plot-block");
             divLabel.style.display = "none";
           }
         })
