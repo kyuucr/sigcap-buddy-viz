@@ -374,8 +374,12 @@
     </div>
     <p></p>
 
-    <h4 id="wifi-rssi-plot-label">Connected Wi-Fi RSSI</h4>
+    <h4 id="wifi-rssi-plot-label">Wi-Fi RSSI</h4>
     <div id="wifi-rssi-plot"></div>
+    <p></p>
+
+    <h4 id="wifi-overlap-plot-label">Number of APs overlapping the connected AP</h4>
+    <div id="wifi-overlap-plot"></div>
     <p></p>
 
     <h4 id="heartbeat-label">Heartbeats</h4>
@@ -419,6 +423,48 @@
               y: yVal,
               sort: "timestamp",
               stroke: strokeVal
+            }
+          )
+        ]
+      })
+      const div = document.querySelector(id);
+      div.append(plot);
+    }
+
+    function appendDataWifi(data, yLabel, yVal, strokeValLine, strokeValDot, id, maxY) {
+      let domainY;
+      if (maxY !== undefined) {
+        domainY = [0, maxY];
+      }
+      const plot = Plot.plot({
+        x: {
+          grid: true,
+          type: "time"
+        },
+        y: {
+          grid: true,
+          label: yLabel,
+          domain: domainY
+        },
+        color: {
+          legend: true
+        },
+        marks: [
+          Plot.ruleY([0]),
+          Plot.lineY(data,
+            {
+              x: val => new Date(val.timestamp),
+              y: yVal,
+              sort: "timestamp",
+              stroke: strokeValLine
+            }
+          ),
+          Plot.dot(data,
+            {
+              x: val => new Date(val.timestamp),
+              y: yVal,
+              sort: "timestamp",
+              stroke: strokeValDot
             }
           )
         ]
@@ -808,6 +854,24 @@
           console.log('error: ' + err);
         });
 
+      const isOverlap = function(a, b) {
+        let center_freq_a = (a.center_freq1_mhz > 0) ? a.center_freq1_mhz : a.center_freq0_mhz;
+        let center_freq_b = (b.center_freq1_mhz > 0) ? b.center_freq1_mhz : b.center_freq0_mhz;
+        let min_freq_a = center_freq_a - (a.bw_mhz / 2);
+        let min_freq_b = center_freq_b - (b.bw_mhz / 2);
+        let max_freq_a = center_freq_a + (a.bw_mhz / 2);
+        let max_freq_b = center_freq_b + (b.bw_mhz / 2);
+        return (min_freq_a <= max_freq_b) && (min_freq_b <= max_freq_a);
+      }
+
+      const dbmToW = function(powDbm) {
+        return Math.pow(10, (powDbm / 10)) / 1000;
+      }
+
+      const wToDbm = function(powW) {
+        return 10 * Math.log10(1000 * powW);
+      }
+
       fetch(`wifi_scan_${deviceId}.json`)
         .then(function (response) {
           return response.json();
@@ -817,12 +881,48 @@
             data = data.filter(val => new Date(val.timestamp).getTime() > cutoff);
           }
           let dataConnected = data.filter(val => val.connected === true);
+          let dataOverlap = data.filter(val => {
+            if (val.connected === true) {
+              return false;
+            }
+            let conn = dataConnected.find(curr => curr.test_uuid === val.test_uuid);
+            if (conn) {
+              return isOverlap(val, conn);
+            } else {
+              return false;
+            }
+          });
+          let overlapGrouped = Object.values(Object.groupBy(dataOverlap, ({ test_uuid }) => test_uuid));
+          let overlapReduced = overlapGrouped.map(val => ({
+            timestamp: val[0].timestamp,
+            rssi_dbm: wToDbm(val.reduce((acc, cur) => acc + dbmToW(cur.rssi_dbm), 0) / val.length),
+            count: val.length,
+            freq_group: (val[0]["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
+            state: "Overlaps (mean)"
+          }));
+
           if (dataConnected.length > 0) {
-            appendData(
+            dataConnected = dataConnected.map(obj => ({
+              ...obj,
+              freq_group: (obj["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
+              state: "Connected"
+            }));
+            if (overlapReduced.length > 0) {
+              dataConnected = dataConnected.concat(overlapReduced);
+              appendData(
+                overlapReduced,
+                "# overlaps",
+                "count",
+                "#F00",
+                "#wifi-overlap-plot"
+              );
+            }
+            appendDataWifi(
               dataConnected,
               "RSSI (dBm)",
               "rssi_dbm",
-              "#F00",
+              "state",
+              (val => `${val.state} ${val.freq_group}`),
               "#wifi-rssi-plot"
             );
           } else {
