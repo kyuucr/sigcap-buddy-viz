@@ -87,7 +87,11 @@
 
     <div id="dl-tput-plot-block">
       <h4 id="dl-tput-plot-label">Downlink throughput</h4>
-      <div id="dl-tput-plot"></div>
+      <div id="dl-tput-plot">
+        <div class="d-flex justify-content-center">
+          <div class="spinner-border m-2" role="status"></div>
+        </div>
+      </div>
       <p></p>
 
       <h4 id="dl-tput-boxplot-label">Hourly downlink throughput</h4>
@@ -97,7 +101,11 @@
 
     <div id="ul-tput-plot-block">
       <h4 id="ul-tput-plot-label">Uplink throughput</h4>
-      <div id="ul-tput-plot"></div>
+      <div id="ul-tput-plot">
+        <div class="d-flex justify-content-center">
+          <div class="spinner-border m-2" role="status"></div>
+        </div>
+      </div>
       <p></p>
 
       <h4 id="ul-tput-boxplot-label">Hourly uplink throughput</h4>
@@ -107,7 +115,11 @@
 
     <div id="latency-plot-block">
       <h4 id="latency-plot-label">Latency</h4>
-      <div id="latency-plot"></div>
+      <div id="latency-plot">
+        <div class="d-flex justify-content-center">
+          <div class="spinner-border m-2" role="status"></div>
+        </div>
+      </div>
       <p></p>
 
       <h4 id="latency-idle-boxplot-label">Hourly latency</h4>
@@ -117,13 +129,21 @@
 
     <div id="wifi-plot-block">
       <h4 id="wifi-rssi-plot-label">Wi-Fi RSSI</h4>
-      <div id="wifi-rssi-plot"></div>
+      <div id="wifi-rssi-plot">
+        <div class="d-flex justify-content-center">
+          <div class="spinner-border m-2" role="status"></div>
+        </div>
+      </div>
       <div class="accordion" id="wifi-rssi-boxplot"></div>
       <p></p>
 
       <div id="wifi-overlap-plot-block">
         <h4 id="wifi-overlap-plot-label">Number of Wi-Fi APs overlapping the connected AP</h4>
-        <div id="wifi-overlap-plot"></div>
+        <div id="wifi-overlap-plot">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border m-2" role="status"></div>
+          </div>
+        </div>
         <div class="accordion" id="wifi-overlap-boxplot"></div>
       </div>
       <p></p>
@@ -176,6 +196,9 @@
         ]
       })
       const div = document.querySelector(id);
+      if (div.childElementCount > 0) {
+        div.replaceChildren();
+      }
       div.append(plot);
     }
 
@@ -219,6 +242,9 @@
         ]
       })
       const div = document.querySelector(id);
+      if (div.childElementCount > 0) {
+        div.replaceChildren();
+      }
       div.append(plot);
     }
 
