@@ -93,6 +93,8 @@
         </div>
       </div>
       <p></p>
+      <div class="accordion" id="wifi-dl-tput-plot"></div>
+      <p></p>
 
       <h4 id="dl-tput-boxplot-label">Hourly downlink throughput</h4>
       <div class="accordion" id="dl-tput-boxplot"></div>
@@ -106,6 +108,8 @@
           <div class="spinner-border m-2" role="status"></div>
         </div>
       </div>
+      <p></p>
+      <div class="accordion" id="wifi-ul-tput-plot"></div>
       <p></p>
 
       <h4 id="ul-tput-boxplot-label">Hourly uplink throughput</h4>
@@ -202,12 +206,12 @@
       div.append(plot);
     }
 
-    function appendLineDot(data, yLabel, yVal, strokeValLine, strokeValDot, id, maxY, minY=0) {
+    function createLineDot(data, yLabel, yVal, strokeValLine, strokeValDot, maxY, minY=0) {
       let domainY;
       if (maxY !== undefined) {
         domainY = [minY, maxY];
       }
-      const plot = Plot.plot({
+      return Plot.plot({
         x: {
           grid: true,
           type: "time"
@@ -241,11 +245,34 @@
           )
         ]
       })
+    }
+
+    function appendLineDot(data, yLabel, yVal, strokeValLine, strokeValDot, id, maxY, minY=0) {
+      const plot = createLineDot(data, yLabel, yVal, strokeValLine, strokeValDot, maxY, minY);
       const div = document.querySelector(id);
       if (div.childElementCount > 0) {
         div.replaceChildren();
       }
       div.append(plot);
+    }
+
+    function appendAccordionLineDot(data, yLabel, yVal, strokeValLine, strokeValDot, id, accordionId, accordionTitle, maxY, minY=0) {
+      let div = document.createElement('div');
+      div.className = "accordion-item"
+      const plot = createLineDot(data, yLabel, yVal, strokeValLine, strokeValDot, maxY, minY);
+      div.innerHTML =
+`<h2 class="accordion-header" id="${id}-label">
+  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${id}-collapse" aria-expanded="false" aria-controls="${id}-collapse">
+    ${accordionTitle}
+  </button>
+</h2>
+<div id="${id}-collapse" class="accordion-collapse collapse" aria-labelledby="${id}-label">
+  <div class="accordion-body">
+    ${plot.outerHTML}
+  </div>
+</div>`;
+
+      document.getElementById(accordionId).appendChild(div);
     }
 
     function appendAccordionBoxplot(data, yLabel, yVal, id, accordionId, accordionTitle, maxY, minY=0) {
@@ -394,11 +421,12 @@
           div.innerHTML = `Last update: ${new Date(data.last_update)}`
         })
 
-      fetch(`throughput_${deviceId}.json`)
+      const tputPromise = fetch(`throughput_${deviceId}.json`)
         .then(function (response) {
           return response.json();
         })
         .then(function (data) {
+          const wlanData = { dl: {}, ul: {} };
           if (cutoff !== undefined) {
             data = data.filter(val => new Date(val.timestamp).getTime() > cutoff);
           }
@@ -415,9 +443,13 @@
             );
             // Iterate for different test types and interfaces
             for (let type of ["iperf", "speedtest"]) {
+              wlanData.dl[type] = {};
               for (let iface of ["eth0", "wlan0", "wlan1"]) {
                 let filteredData = dlData.filter(val => val.type === type
                   && val.interface === iface);
+                if (iface.startsWith("wlan")) {
+                  wlanData.dl[type][iface] = filteredData;
+                }
                 // Check if filtered data is not empty
                 if (filteredData.length > 0) {
                   appendAccordionBoxplot(
@@ -450,9 +482,13 @@
             );
             // Iterate for different test types and interfaces
             for (let type of ["iperf", "speedtest"]) {
+              wlanData.ul[type] = {};
               for (let iface of ["eth0", "wlan0", "wlan1"]) {
                 let filteredData = ulData.filter(val => val.type === type
                   && val.interface === iface);
+                if (iface.startsWith("wlan")) {
+                  wlanData.ul[type][iface] = filteredData;
+                }
                 // Check if filtered data is not empty
                 if (filteredData.length > 0) {
                   appendAccordionBoxplot(
@@ -471,6 +507,8 @@
             const divLabel = document.querySelector(`#ul-tput-plot-block`);
             divLabel.style.display = "none";
           }
+
+          return wlanData;
         })
         .catch(function (err) {
           console.log('error: ' + err);
@@ -524,7 +562,7 @@
           console.log('error: ' + err);
         });
 
-      fetch(`wifi_scan_${deviceId}.json`)
+      const scanPromise = fetch(`wifi_scan_${deviceId}.json`)
         .then(function (response) {
           return response.json();
         })
@@ -569,6 +607,7 @@
             let overlapReduced = Object.values(overlapGrouped).map(val => ({
               timestamp: val[0].timestamp,
               rssi_dbm: wToDbm(val.reduce((acc, cur) => acc + dbmToW(cur.rssi_dbm), 0) / val.length),
+              // rssi_dbm: val.reduce((acc, cur) => ((cur.rssi_dbm > acc) ? cur.rssi_dbm : acc), -200),
               count: val.length,
               freq_group: (val[0]["primary_freq_mhz"] > 6000) ? "6 GHz" : (val[0]["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
               state: "Overlaps (mean)"
@@ -677,10 +716,84 @@
             const divLabel = document.querySelector("#wifi-plot-block");
             divLabel.style.display = "none";
           }
+
+          return dataConnected;
         })
         .catch(function (err) {
           console.log('error: ' + err);
         });
+
+      Promise.allSettled([tputPromise, scanPromise])
+        .then(function (response) {
+          let wlanData = response[0].value;
+          let scanData = response[1].value;
+
+          for (const dir in wlanData) {
+            let maxTput = 0;
+            for (const type in wlanData[dir]) {
+              for (const iface in wlanData[dir][type]) {
+                wlanData[dir][type][iface] = wlanData[dir][type][iface].map(
+                  (obj) => {
+                    let conn = scanData.find(val =>
+                      val.test_uuid === obj.test_uuid
+                      && val.connected
+                      && val.connected === true);
+
+                    return {
+                      ...obj,
+                      freq_group: conn ? conn.freq_group : "unknown"
+                    }
+                  });
+
+                maxTput = wlanData[dir][type][iface].reduce(
+                  (acc, cur) => ((cur.max_tput_mbps > acc) ? cur.max_tput_mbps : acc),
+                  maxTput);
+              }
+            }
+
+            for (const type in wlanData[dir]) {
+              for (const iface in wlanData[dir][type]) {
+                if (wlanData[dir][type][iface].length > 0) {
+                  appendAccordionLineDot(
+                    wlanData[dir][type][iface],
+                    "Throughput (Mbps)",
+                    "max_tput_mbps",
+                    "#F00",
+                    "freq_group",
+                    `wifi-${dir}-tput-${type}-${iface}`,
+                    `wifi-${dir}-tput-plot`,
+                    `${testTypeDict[type]} ${iface} throughput breakdown`,
+                    maxTput
+                  );
+                  let wlanData2_4 = wlanData[dir][type][iface].filter(val => val.freq_group === "2.4 GHz");
+                  if (wlanData2_4.length > 0) {
+                    appendAccordionBoxplot(
+                      wlanData2_4,
+                      "Throughput (Mbps)",
+                      "max_tput_mbps",
+                      `wifi-${dir}-tput-${type}-${iface}-2_4-boxplot`,
+                      `${dir}-tput-boxplot`,
+                      `${testTypeDict[type]} ${iface} (2.4 GHz)`,
+                      maxTput
+                    );
+                  }
+                  let wlanData5 = wlanData[dir][type][iface].filter(val => val.freq_group === "5 GHz");
+                  if (wlanData5.length > 0) {
+                    appendAccordionBoxplot(
+                      wlanData5,
+                      "Throughput (Mbps)",
+                      "max_tput_mbps",
+                      `wifi-${dir}-tput-${type}-${iface}-5-boxplot`,
+                      `${dir}-tput-boxplot`,
+                      `${testTypeDict[type]} ${iface} (5 GHz)`,
+                      maxTput
+                    );
+                  }
+                }
+              }
+            }
+          }
+        })
 
       fetch(`heartbeat_${deviceId}.json`)
         .then(function (response) {
