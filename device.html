@@ -77,6 +77,7 @@
               <li><a id="dl-wifi-scan-csv">Wi-Fi Scan CSV</a></li>
               <li><a id="dl-wifi-scan-json">Wi-Fi Scan JSON</a></li>
               <li><a id="dl-csv">All CSV & JSON data</a></li>
+              <li><a id="dl-prog-log">Main program log</a></li>
               <li><a id="dl-log">Raw logs</a></li>
             </ul>
           </div>
@@ -403,6 +404,7 @@
       };
       document.getElementById("dl-csv").href = `data_${deviceId}.zip`;
       document.getElementById("dl-log").href = `rawlogs_${deviceId}.zip`;
+      document.getElementById("dl-prog-log").href = `speedtest_logger_${deviceId}.log`;
       document.getElementById("dl-heartbeat-csv").href = `heartbeat_${deviceId}.csv`;
       document.getElementById("dl-heartbeat-json").href = `heartbeat_${deviceId}.json`;
       document.getElementById("dl-latency-csv").href = `latency_${deviceId}.csv`;
