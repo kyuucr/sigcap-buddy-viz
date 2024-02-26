@@ -605,7 +605,7 @@
               }
             });
             let overlapGrouped = Object.groupBy(dataOverlap, ({ test_uuid, corr_test }) => `${test_uuid}-${corr_test}`);
-            delete overlapGrouped.unknown;
+            delete overlapGrouped["unknown-unknown"];
             let overlapReduced = Object.values(overlapGrouped).map(val => ({
               timestamp: val[0].timestamp,
               rssi_dbm: wToDbm(val.reduce((acc, cur) => acc + dbmToW(cur.rssi_dbm), 0) / val.length),
