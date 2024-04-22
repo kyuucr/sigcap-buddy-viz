@@ -8,6 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <style>
     .status-online::before,
+    .status-attn::before,
     .status-offline::before {
       display: inline-block;
       content: "";
@@ -21,6 +22,9 @@
     }
     .status-online::before {
       background-image: url("data:image/svg+xml,<svg width='16' height='16' viewBox='0 0 16 16' fill='%230F0' class='bi bi-circle-fill' xmlns='http://www.w3.org/2000/svg'><circle cx='8' cy='8' r='8'/></svg>");
+    }
+    .status-attn::before {
+      background-image: url("data:image/svg+xml,<svg width='16' height='16' viewBox='0 0 16 16' fill='%23FF0' class='bi bi-exclamation-circle-fill' xmlns='http://www.w3.org/2000/svg'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2'/></svg>");
     }
     .status-offline::before {
       background-image: url("data:image/svg+xml,<svg width='16' height='16' viewBox='0 0 16 16' fill='%23F00' class='bi bi-dash-circle-fill' xmlns='http://www.w3.org/2000/svg'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z'/></svg>");
@@ -58,6 +62,32 @@
   </nav>
   <div class="container-md">
     <h3>Device <span class="device-id"></span></h3>
+    <table class="table table-striped-columns">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Last timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Heartbeat:</td>
+          <td id="heartbeatState"></td>
+          <td id="heartbeatTimestamp"></td>
+        </tr>
+        <tr>
+          <td>Ethernet test:</td>
+          <td id="ethState"></td>
+          <td id="ethTimestamp"></td>
+        </tr>
+        <tr>
+          <td>WLAN test:</td>
+          <td id="wlanState"></td>
+          <td id="wlanTimestamp"></td>
+        </tr>
+      </tbody>
+    </table>
     <div class="accordion">
       <div class="accordion-item">
         <h2 class="accordion-header" id="latency-idle-boxplot-speedtest-eth0-label">
@@ -346,6 +376,28 @@
       }
     }
 
+    function appendStatus(data, deviceId) {
+      let hb = data.find(val => val.mac === deviceId);
+      let ethState = hb.last_timestamp - hb.last_test_eth;
+      let wlanState = hb.last_timestamp - hb.last_test_wlan;
+      const threshold_ms = 3720000 // 1h 2m
+
+      let td = document.getElementById("heartbeatState");
+      td.innerHTML = hb.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>";
+      td = document.getElementById("heartbeatTimestamp");
+      td.innerHTML = new Date(hb.last_timestamp);
+
+      td = document.getElementById("ethState");
+      td.innerHTML = `<span class=\"${(isNaN(ethState) || !hb.online) ? "status-offline\">Disabled" : (ethState > threshold_ms) ? "status-attn\">No tests in the last 1 hour" : "status-online\">Online"}</span>`;
+      td = document.getElementById("ethTimestamp");
+      td.innerHTML = new Date(hb.last_test_eth);
+
+      td = document.getElementById("wlanState");
+      td.innerHTML = `<span class=\"${(isNaN(wlanState) || !hb.online) ? "status-offline\">Disabled" : (wlanState > threshold_ms) ? "status-attn\">No tests in the last 1 hour" : "status-online\">Online"}</span>`;
+      td = document.getElementById("wlanTimestamp");
+      td.innerHTML = new Date(hb.last_test_wlan);
+    }
+
     // Hardcoded dict
     const deviceDict = {
       "8E-51-F9-59-3F-8D": "UChicago Pi",
@@ -423,6 +475,17 @@
           const div = document.querySelector("#lastupdate-text");
           div.innerHTML = `Last update: ${new Date(data.last_update)}`
         })
+
+      fetch('device_list.json')
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          appendStatus(data, deviceId);
+        })
+        .catch(function (err) {
+          console.log('error: ' + err);
+        });
 
       const tputPromise = fetch(`throughput_${deviceId}.json`)
         .then(function (response) {
