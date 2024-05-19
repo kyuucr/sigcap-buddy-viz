@@ -110,7 +110,7 @@
         let wlanState = entry.last_timestamp - entry.last_test_wlan;
         console.log(entry, ethState, wlanState)
         let tr = document.createElement("tr");
-        tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.mac}${deviceDict[entry.mac] ? " <small class=\"text-muted\">(" + deviceDict[entry.mac] + ")</small>" : ""}</a></td>`
+        tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.rpi_id != "NaN" ? entry.rpi_id : entry.mac}${deviceDict[entry.mac] ? " <small class=\"text-muted\">(" + deviceDict[entry.mac] + ")</small>" : ""}</a></td>`
           + `<td>${entry.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>"}</td>`
           + `<td>${new Date(entry.last_timestamp)}</td>`
           + `<td><span class=\"${(!entry.online) ? "status-offline\">Offline" : (isNaN(ethState)) ? "status-disabled\">Disabled" : (ethState > threshold_ms) ? "status-attn\">Warning" : "status-online\">Online"}</span></td>`

@@ -386,16 +386,31 @@
       let wlanState = hb.last_timestamp - hb.last_test_wlan;
       const threshold_ms = 5400000 // 90 mins
 
+      // Set header title
+      let text = deviceId;
+      if (hb.rpi_id != "NaN") {
+        text = `${hb.rpi_id} / ${text}`
+      }
+      if (deviceDict[deviceId]) {
+        text += ` <small class="text-muted">(${deviceDict[deviceId]})</small>`
+      }
+      for (let item of document.getElementsByClassName("device-id")){
+        item.innerHTML = text;
+      };
+
+      // Set HB state row
       let td = document.getElementById("heartbeatState");
       td.innerHTML = hb.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>";
       td = document.getElementById("heartbeatTimestamp");
       td.innerHTML = new Date(hb.last_timestamp);
 
+      // Set Ethernet state row
       td = document.getElementById("ethState");
       td.innerHTML = `<span class=\"${(!hb.online) ? "status-offline\">Offline" : (isNaN(ethState)) ? "status-disabled\">Disabled" : (ethState > threshold_ms) ? "status-attn\">No tests in the last 1 hour" : "status-online\">Online"}</span>`;
       td = document.getElementById("ethTimestamp");
       td.innerHTML = new Date(hb.last_test_eth);
 
+      // Set Wi-Fi state row
       td = document.getElementById("wlanState");
       td.innerHTML = `<span class=\"${(!hb.online) ? "status-offline\">Offline" : (isNaN(wlanState)) ? "status-disabled\">Disabled" : (wlanState > threshold_ms) ? "status-attn\">No tests in the last 1 hour" : "status-online\">Online"}</span>`;
       td = document.getElementById("wlanTimestamp");
@@ -453,12 +468,7 @@
     if(window.location.hash) {
       const deviceId = window.location.hash.slice(1);
       const cutoff = dataFilterDict[deviceId];
-      for (let item of document.getElementsByClassName("device-id")){
-        item.innerHTML = `${deviceId}`;
-        if (deviceDict[deviceId]) {
-          item.innerHTML += ` <small class="text-muted">(${deviceDict[deviceId]})</small>`
-        }
-      };
+
       document.getElementById("dl-csv").href = `data_${deviceId}.zip`;
       document.getElementById("dl-log").href = `rawlogs_${deviceId}.zip`;
       document.getElementById("dl-prog-log").href = `speedtest_logger_${deviceId}.log`;
