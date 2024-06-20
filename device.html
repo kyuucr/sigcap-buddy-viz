@@ -543,6 +543,14 @@
       return 10 * Math.log10(1000 * powW);
     }
 
+    const readDf = function(df) {
+      return df.data.map(row => {
+        return Object.fromEntries(row.map((val, idx) =>
+          [df.columns[idx], val]
+        ));
+      });
+    }
+
     if(window.location.hash) {
       const deviceId = window.location.hash.slice(1);
       const cutoff = dataFilterDict[deviceId];
@@ -579,7 +587,7 @@
           console.log('error: ' + err);
         });
 
-      const tputPromise = fetch(`throughput_${deviceId}.json`)
+      fetch(`throughput_${deviceId}.json`)
         .then(function (response) {
           return response.json();
         })
@@ -665,8 +673,6 @@
             const divLabel = document.querySelector(`#ul-tput-plot-block`);
             divLabel.style.display = "none";
           }
-
-          return wlanData;
         })
         .catch(function (err) {
           console.log('error: ' + err);
@@ -720,64 +726,69 @@
           console.log('error: ' + err);
         });
 
-      const scanPromise = fetch(`wifi_scan_${deviceId}.json`)
+      fetch(`agg_tput_${deviceId}.json`)
         .then(function (response) {
           return response.json();
         })
         .then(function (data) {
+          data = readDf(data).filter(
+            val => val.rssi_dbm
+          ).map(obj => {
+            return {
+              ...obj,
+              freq_group: (obj.primary_freq_mhz > 6000) ? "6 GHz" : (obj.primary_freq_mhz > 5000) ? "5 GHz" : "2.4 GHz"
+            }
+          });
           if (cutoff !== undefined) {
             data = data.filter(val => new Date(val.timestamp).getTime() > cutoff);
           }
-          if (wifiConnDict[deviceId]) {
-            data = data.map(val => {
-              if (val.connected === false && val.bssid === wifiConnDict[deviceId]) {
-                val.connected = true;
-              }
-              return val
-            });
-          }
-          let dataConnected = data.filter(val => val.connected === true);
 
-          if (dataConnected.length > 0) {
-            dataConnected = dataConnected.map(obj => ({
-              ...obj,
-              freq_group: (obj["primary_freq_mhz"] > 6000) ? "6 GHz" : (obj["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
-              state: "Connected"
-            }));
-            let maxRssi = dataConnected.reduce((acc, cur) => ((cur.rssi_dbm > acc) ? cur.rssi_dbm : acc), -200);
-            let minRssi = dataConnected.reduce((acc, cur) => ((cur.rssi_dbm < acc) ? cur.rssi_dbm : acc), 0);
-            // console.log(minRssi, maxRssi)
 
-            // Count overlaps
-            let dataOverlap = data.filter(val => {
-              if (val.connected === true) {
-                return false;
-              }
-              let conn = dataConnected.find(curr => curr.test_uuid === val.test_uuid);
-              if (conn) {
-                return isOverlap(val, conn);
-              } else {
-                return false;
-              }
-            });
-            let overlapGrouped = Object.groupBy(dataOverlap, ({ test_uuid, corr_test }) => `${test_uuid}-${corr_test}`);
-            delete overlapGrouped["unknown-unknown"];
-            let overlapReduced = Object.values(overlapGrouped).map(val => ({
-              timestamp: val[0].timestamp,
-              rssi_dbm: wToDbm(val.reduce((acc, cur) => acc + dbmToW(cur.rssi_dbm), 0) / val.length),
-              // rssi_dbm: val.reduce((acc, cur) => ((cur.rssi_dbm > acc) ? cur.rssi_dbm : acc), -200),
-              count: val.length,
-              freq_group: (val[0]["primary_freq_mhz"] > 6000) ? "6 GHz" : (val[0]["primary_freq_mhz"] > 5000) ? "5 GHz" : "2.4 GHz",
-              state: "Overlaps (mean)"
-            }));
-            if (overlapReduced.length > 0) {
-              // Recalculate max and min RSSI
-              maxRssi = overlapReduced.reduce((acc, cur) => ((cur.rssi_dbm > acc) ? cur.rssi_dbm : acc), maxRssi);
-              minRssi = overlapReduced.reduce((acc, cur) => ((cur.rssi_dbm < acc) ? cur.rssi_dbm : acc), minRssi);
-              // console.log(minRssi, maxRssi)
-            }
+          if (data.length > 0) {
+            let maxRssi = data.reduce((acc, cur) => (
+              Math.max(
+                (cur.rssi_dbm ? cur.rssi_dbm : -Infinity),
+                (cur.overlap_full_mean_rssi_dbm ? cur.overlap_full_mean_rssi_dbm : -Infinity),
+                (cur.overlap_primary_mean_rssi_dbm ? cur.overlap_primary_mean_rssi_dbm : -Infinity),
+                acc)
+            ), -Infinity);
+            let minRssi = data.reduce((acc, cur) => (
+              Math.min(
+                (cur.rssi_dbm ? cur.rssi_dbm : Infinity),
+                (cur.overlap_full_mean_rssi_dbm ? cur.overlap_full_mean_rssi_dbm : Infinity),
+                (cur.overlap_primary_mean_rssi_dbm ? cur.overlap_primary_mean_rssi_dbm : Infinity),
+                acc)
+            ), Infinity);
 
-            let conn2_4 = dataConnected.filter(val => val.freq_group === "2.4 GHz");
+            let rssiMerged = data.map(val => ({
+              timestamp: val.timestamp,
+              state: "connected",
+              rssi_dbm: val.rssi_dbm,
+              freq_group: val.freq_group
+            })).concat(data.map(val => ({
+              timestamp: val.timestamp,
+              state: "overlap",
+              rssi_dbm: val.overlap_full_mean_rssi_dbm,
+              freq_group: val.freq_group
+            // })), data.map(val => ({
+            //   timestamp: val.timestamp,
+            //   state: "overlap primary",
+            //   rssi_dbm: val.overlap_primary_mean_rssi_dbm,
+            //   freq_group: val.freq_group
+            })))
+            // console.log("RSSI merged:", rssiMerged);
+            appendLineDot(
+              rssiMerged,
+              "RSSI (dBm)",
+              "rssi_dbm",
+              "state",
+              (val => `${val.state} ${val.freq_group}`),
+              "#wifi-rssi-plot",
+              maxRssi,
+              minRssi
+            );
+
+            let conn2_4 = data.filter(val => val.freq_group === "2.4 GHz");
             if (conn2_4.length > 0) {
               appendAccordionBoxplot(
                 conn2_4,
@@ -789,8 +800,26 @@
                 maxRssi,
                 minRssi
               );
+              appendAccordionBoxplot(
+                conn2_4,
+                "RSSI (dBm)",
+                "overlap_full_mean_rssi_dbm",
+                "wifi-rssi-overlap-boxplot-2_4",
+                "wifi-rssi-boxplot",
+                "Hourly Wi-Fi RSSI (Overlap AP 2.4 GHz)",
+                maxRssi,
+                minRssi
+              );
+              appendAccordionBoxplot(
+                conn2_4,
+                "# overlaps",
+                "overlap_full_count",
+                "wifi-overlap-boxplot-2_4",
+                "wifi-overlap-boxplot",
+                "Hourly count of overlapping APs (2.4 GHz)"
+              );
             }
-            let conn5 = dataConnected.filter(val => val.freq_group === "5 GHz");
+            let conn5 = data.filter(val => val.freq_group === "5 GHz");
             if (conn5.length > 0) {
               appendAccordionBoxplot(
                 conn5,
@@ -802,149 +831,133 @@
                 maxRssi,
                 minRssi
               );
+              appendAccordionBoxplot(
+                conn5,
+                "RSSI (dBm)",
+                "overlap_full_mean_rssi_dbm",
+                "wifi-rssi-overlap-boxplot-5",
+                "wifi-rssi-boxplot",
+                "Hourly Wi-Fi RSSI (Overlap AP 5 GHz)",
+                maxRssi,
+                minRssi
+              );
+              appendAccordionBoxplot(
+                conn5,
+                "# overlaps",
+                "overlap_full_count",
+                "wifi-overlap-boxplot-5",
+                "wifi-overlap-boxplot",
+                "Hourly count of overlapping APs (5 GHz)"
+              );
+            }
+            let conn6 = data.filter(val => val.freq_group === "6 GHz");
+            if (conn6.length > 0) {
+              appendAccordionBoxplot(
+                conn6,
+                "RSSI (dBm)",
+                "rssi_dbm",
+                "wifi-rssi-conn-boxplot-6",
+                "wifi-rssi-boxplot",
+                "Hourly Wi-Fi RSSI (Connected AP 6 GHz)",
+                maxRssi,
+                minRssi
+              );
+              appendAccordionBoxplot(
+                conn6,
+                "RSSI (dBm)",
+                "overlap_full_mean_rssi_dbm",
+                "wifi-rssi-overlap-boxplot-6",
+                "wifi-rssi-boxplot",
+                "Hourly Wi-Fi RSSI (Overlap AP 6 GHz)",
+                maxRssi,
+                minRssi
+              );
+              appendAccordionBoxplot(
+                conn6,
+                "# overlaps",
+                "overlap_full_count",
+                "wifi-overlap-boxplot-6",
+                "wifi-overlap-boxplot",
+                "Hourly count of overlapping APs (6 GHz)"
+              );
             }
 
-            if (overlapReduced.length > 0) {
-              dataConnected = dataConnected.concat(overlapReduced);
-              appendLineDot(
-                overlapReduced,
-                "# overlaps",
-                "count",
-                "#F00",
-                "freq_group",
-                "#wifi-overlap-plot"
-              );
-              let overlapReduced2_4 = overlapReduced.filter(val => val.freq_group === "2.4 GHz");
-              if (overlapReduced2_4.length > 0) {
-                appendAccordionBoxplot(
-                  overlapReduced2_4,
-                  "# overlaps",
-                  "count",
-                  "wifi-overlap-boxplot-2_4",
-                  "wifi-overlap-boxplot",
-                  "Hourly count of overlapping APs (2.4 GHz)"
-                );
-                appendAccordionBoxplot(
-                  overlapReduced2_4,
-                  "RSSI (dBm)",
-                  "rssi_dbm",
-                  "wifi-rssi-overlap-boxplot-2_4",
-                  "wifi-rssi-boxplot",
-                  "Hourly Wi-Fi RSSI (Overlapping APs 2.4 GHz)",
-                  maxRssi,
-                  minRssi
-                );
-              }
-              let overlapReduced5 = overlapReduced.filter(val => val.freq_group === "5 GHz");
-              if (overlapReduced5.length > 0) {
-                appendAccordionBoxplot(
-                  overlapReduced5,
-                  "# overlaps",
-                  "count",
-                  "wifi-overlap-boxplot-5",
-                  "wifi-overlap-boxplot",
-                  "Hourly count of overlapping APs (5 GHz)"
-                );
-                appendAccordionBoxplot(
-                  overlapReduced5,
-                  "RSSI (dBm)",
-                  "rssi_dbm",
-                  "wifi-rssi-overlap-boxplot-5",
-                  "wifi-rssi-boxplot",
-                  "Hourly Wi-Fi RSSI (Overlapping APs 5 GHz)",
-                  maxRssi,
-                  minRssi
-                );
-              }
-            } else {
-              const divLabel = document.querySelector("#wifi-overlap-plot-block");
-              divLabel.style.display = "none";
-            }
             appendLineDot(
-              dataConnected,
-              "RSSI (dBm)",
-              "rssi_dbm",
-              "state",
-              (val => `${val.state} ${val.freq_group}`),
-              "#wifi-rssi-plot",
-              maxRssi,
-              minRssi
+              data,
+              "# overlaps",
+              "overlap_full_count",
+              "#F00",
+              "freq_group",
+              "#wifi-overlap-plot"
             );
           } else {
-            const divLabel = document.querySelector("#wifi-plot-block");
+            let divLabel = document.querySelector("#wifi-plot-block");
+            divLabel.style.display = "none";
+            divLabel = document.querySelector("#wifi-overlap-plot-block");
             divLabel.style.display = "none";
           }
 
-          return dataConnected;
-        })
-        .catch(function (err) {
-          console.log('error: ' + err);
-        });
-
-      Promise.allSettled([tputPromise, scanPromise])
-        .then(function (response) {
-          let wlanData = response[0].value;
-          let scanData = response[1].value;
-
-          for (const dir in wlanData) {
-            let maxTput = 0;
-            for (const type in wlanData[dir]) {
-              for (const iface in wlanData[dir][type]) {
-                wlanData[dir][type][iface] = wlanData[dir][type][iface].map(
-                  (obj) => {
-                    let conn = scanData.find(val =>
-                      val.test_uuid === obj.test_uuid
-                      && val.connected
-                      && val.connected === true);
-
-                    return {
-                      ...obj,
-                      freq_group: conn ? conn.freq_group : "unknown"
-                    }
-                  });
-
-                maxTput = wlanData[dir][type][iface].reduce(
-                  (acc, cur) => ((cur.max_tput_mbps > acc) ? cur.max_tput_mbps : acc),
-                  maxTput);
-              }
-            }
-
-            for (const type in wlanData[dir]) {
-              for (const iface in wlanData[dir][type]) {
-                if (wlanData[dir][type][iface].length > 0) {
+          for (const dir of ["dl", "ul"]) {
+            for (const type of ["iperf", "speedtest"]) {
+              for (const iface of ["wlan0", "wlan1"]) {
+                let currData = data.filter(val => (
+                  val.type === `${type}-${dir}`
+                    && val[`max_tput_mbps_${iface}`]
+                ));
+                let maxWlanTput = currData.reduce(
+                  (acc, cur) => {
+                    return Math.max(
+                      (cur[`max_tput_mbps_${iface}`] ? cur[`max_tput_mbps_${iface}`] : 0),
+                      acc
+                    );
+                  }, 0);
+                // console.log(`${type}-${dir}-${iface}`, currData);
+                if (currData.length > 0) {
                   appendAccordionLineDot(
-                    wlanData[dir][type][iface],
+                    currData,
                     "Throughput (Mbps)",
-                    "max_tput_mbps",
+                    `max_tput_mbps_${iface}`,
                     "#F00",
                     "freq_group",
                     `wifi-${dir}-tput-${type}-${iface}`,
                     `wifi-${dir}-tput-plot`,
                     `${testTypeDict[type]} ${iface} throughput breakdown`,
-                    maxTput
+                    maxWlanTput
                   );
-                  let wlanData2_4 = wlanData[dir][type][iface].filter(val => val.freq_group === "2.4 GHz");
+                  let wlanData2_4 = currData.filter(val => val.freq_group === "2.4 GHz");
                   if (wlanData2_4.length > 0) {
                     appendAccordionBoxplot(
                       wlanData2_4,
                       "Throughput (Mbps)",
-                      "max_tput_mbps",
+                      `max_tput_mbps_${iface}`,
                       `wifi-${dir}-tput-${type}-${iface}-2_4-boxplot`,
                       `${dir}-tput-boxplot`,
                       `${testTypeDict[type]} ${iface} (2.4 GHz)`,
-                      maxTput
+                      maxWlanTput
                     );
                   }
-                  let wlanData5 = wlanData[dir][type][iface].filter(val => val.freq_group === "5 GHz");
+                  let wlanData5 = currData.filter(val => val.freq_group === "5 GHz");
                   if (wlanData5.length > 0) {
                     appendAccordionBoxplot(
                       wlanData5,
                       "Throughput (Mbps)",
-                      "max_tput_mbps",
+                      `max_tput_mbps_${iface}`,
                       `wifi-${dir}-tput-${type}-${iface}-5-boxplot`,
                       `${dir}-tput-boxplot`,
                       `${testTypeDict[type]} ${iface} (5 GHz)`,
-                      maxTput
+                      maxWlanTput
+                    );
+                  }
+                  let wlanData6 = currData.filter(val => val.freq_group === "6 GHz");
+                  if (wlanData6.length > 0) {
+                    appendAccordionBoxplot(
+                      wlanData6,
+                      "Throughput (Mbps)",
+                      `max_tput_mbps_${iface}`,
+                      `wifi-${dir}-tput-${type}-${iface}-6-boxplot`,
+                      `${dir}-tput-boxplot`,
+                      `${testTypeDict[type]} ${iface} (6 GHz)`,
+                      maxWlanTput
                     );
                   }
                 }
@@ -952,6 +965,9 @@
             }
           }
         })
+        .catch(function (err) {
+          console.log('error: ' + err);
+        });
 
       fetch(`heartbeat_${deviceId}.json`)
         .then(function (response) {
