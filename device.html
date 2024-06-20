@@ -169,6 +169,8 @@
               <li><a id="dl-throughput-json">Throughput JSON</a></li>
               <li><a id="dl-wifi-scan-csv">Wi-Fi Scan CSV</a></li>
               <li><a id="dl-wifi-scan-json">Wi-Fi Scan JSON</a></li>
+              <li><a id="dl-agg-tput-csv">Aggregated Wi-Fi + Throughput CSV</a></li>
+              <li><a id="dl-agg-tput-json">Aggregated Wi-Fi + Throughput JSON</a></li>
               <li><a id="dl-csv">All CSV & JSON data</a></li>
               <li><a id="dl-prog-log">Main program log</a></li>
               <li><a id="dl-log">Raw logs</a></li>
@@ -566,6 +568,8 @@
       document.getElementById("dl-throughput-json").href = `throughput_${deviceId}.json`;
       document.getElementById("dl-wifi-scan-csv").href = `wifi_scan_${deviceId}.csv`;
       document.getElementById("dl-wifi-scan-json").href = `wifi_scan_${deviceId}.json`;
+      document.getElementById("dl-agg-tput-csv").href = `agg_tput_${deviceId}.csv`;
+      document.getElementById("dl-agg-tput-json").href = `agg_tput_${deviceId}.json`;
 
       fetch(`last_update.json`)
         .then(function (response) {
