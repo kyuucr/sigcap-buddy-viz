@@ -94,12 +94,71 @@
     </table>
     <div class="accordion">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="latency-idle-boxplot-speedtest-eth0-label">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#latency-idle-boxplot-speedtest-eth0-collapse" aria-expanded="false" aria-controls="latency-idle-boxplot-speedtest-eth0-collapse">
-            Download dataset for&nbsp;<span class="device-id"></span>
+        <h2 class="accordion-header" id="summary-box-label">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#summary-box-collapse" aria-expanded="false" aria-controls="summary-box-collapse">
+            Summary
           </button>
         </h2>
-        <div id="latency-idle-boxplot-speedtest-eth0-collapse" class="accordion-collapse collapse" aria-labelledby="latency-idle-boxplot-speedtest-eth0-label">
+        <div id="summary-box-collapse" class="accordion-collapse collapse" aria-labelledby="summary-box-label">
+          <div class="accordion-body">
+            <table class="table table-striped-columns">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mean DL Throughput Ethernet</td>
+                  <td id="mean_dl_tput_mbps_eth"></td>
+                </tr>
+                <tr>
+                  <td>Mean DL Throughput WLAN</td>
+                  <td id="mean_dl_tput_mbps_wlan"></td>
+                </tr>
+                <tr>
+                  <td>Mean UL Throughput Ethernet</td>
+                  <td id="mean_ul_tput_mbps_eth"></td>
+                </tr>
+                <tr>
+                  <td>Mean UL Throughput WLAN</td>
+                  <td id="mean_ul_tput_mbps_wlan"></td>
+                </tr>
+                <tr>
+                  <td>Total Collected DL Data in Ethernet</td>
+                  <td id="day_worth_of_dl_data_eth"></td>
+                </tr>
+                <tr>
+                  <td>Total Collected DL Data in WLAN</td>
+                  <td id="day_worth_of_dl_data_wlan"></td>
+                </tr>
+                <tr>
+                  <td>Total Collected UL Data in Ethernet</td>
+                  <td id="day_worth_of_ul_data_eth"></td>
+                </tr>
+                <tr>
+                  <td>Total Collected UL Data in WLAN</td>
+                  <td id="day_worth_of_ul_data_wlan"></td>
+                </tr>
+                <tr>
+                  <td>Data  Used</td>
+                  <td id="data_used_gbytes"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="download-box-label">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#download-box-collapse" aria-expanded="false" aria-controls="download-box-collapse">
+            Download dataset
+          </button>
+        </h2>
+        <div id="download-box-collapse" class="accordion-collapse collapse" aria-labelledby="download-box-label">
           <div class="accordion-body">
             <ul>
               <li><a id="dl-heartbeat-csv">Heartbeat CSV</a></li>
@@ -384,6 +443,7 @@
       let hb = data.find(val => val.mac === deviceId);
       let ethState = hb.last_timestamp - hb.last_test_eth;
       let wlanState = hb.last_timestamp - hb.last_test_wlan;
+      let cap = (hb.data_used_gbytes > 100)
       const threshold_ms = 86400000 // 24 hours
 
       // Set header title
@@ -406,15 +466,29 @@
 
       // Set Ethernet state row
       td = document.getElementById("ethState");
-      td.innerHTML = `<span class=\"${(!hb.online) ? "status-offline\">Offline" : (isNaN(ethState)) ? "status-disabled\">Disabled" : (ethState > threshold_ms) ? "status-attn\">No tests in the last 24 hours" : "status-online\">Online"}</span>`;
+      td.innerHTML = `<span class=\"${(!hb.online) ? "status-offline\">Offline" : (cap) ? "status-disabled\">Data cap" : (isNaN(ethState)) ? "status-disabled\">Disabled" : (ethState > threshold_ms) ? "status-attn\">No tests in the last 24 hours" : "status-online\">Online"}</span>`;
       td = document.getElementById("ethTimestamp");
       td.innerHTML = new Date(hb.last_test_eth);
 
       // Set Wi-Fi state row
       td = document.getElementById("wlanState");
-      td.innerHTML = `<span class=\"${(!hb.online) ? "status-offline\">Offline" : (isNaN(wlanState)) ? "status-disabled\">Disabled" : (wlanState > threshold_ms) ? "status-attn\">No tests in the last 24 hours" : "status-online\">Online"}</span>`;
+      td.innerHTML = `<span class=\"${(!hb.online) ? "status-offline\">Offline" : (cap) ? "status-disabled\">Data cap" : (isNaN(wlanState)) ? "status-disabled\">Disabled" : (wlanState > threshold_ms) ? "status-attn\">No tests in the last 24 hours" : "status-online\">Online"}</span>`;
       td = document.getElementById("wlanTimestamp");
       td.innerHTML = new Date(hb.last_test_wlan);
+
+      // Set summary
+      for (let id of ["mean_dl_tput_mbps_eth", "mean_dl_tput_mbps_wlan", "mean_ul_tput_mbps_eth", "mean_ul_tput_mbps_wlan"]) {
+        td = document.getElementById(id);
+        td.innerHTML = `${hb[id].toFixed(2)} Mbps`;
+      }
+      for (let id of ["day_worth_of_dl_data_eth", "day_worth_of_dl_data_wlan", "day_worth_of_ul_data_eth", "day_worth_of_ul_data_wlan"]) {
+        td = document.getElementById(id);
+        td.innerHTML = `${hb[id].toFixed(2)} days worth of data`;
+      }
+      for (let id of ["data_used_gbytes"]) {
+        td = document.getElementById(id);
+        td.innerHTML = `${hb[id].toFixed(2)} GBytes`;
+      }
     }
 
     // Hardcoded dict

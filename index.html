@@ -83,6 +83,7 @@
         return response.json();
       })
       .then(function (data) {
+        console.log(data)
         appendData(data);
       })
       .catch(function (err) {
@@ -109,13 +110,14 @@
       for (let entry of data) {
         let ethState = entry.last_timestamp - entry.last_test_eth;
         let wlanState = entry.last_timestamp - entry.last_test_wlan;
+        let cap = (entry.data_used_gbytes > 100)
         console.log(entry, ethState, wlanState)
         let tr = document.createElement("tr");
         tr.innerHTML = `<td><a href="device.html#${entry.mac}">${entry.rpi_id != "NaN" ? entry.rpi_id + " / " : ""}${entry.mac}${deviceDict[entry.mac] ? " <small class=\"text-muted\">(" + deviceDict[entry.mac] + ")</small>" : ""}</a></td>`
           + `<td>${entry.online ? "<span class=\"status-online\">Online</span>" : "<span class=\"status-offline\">Offline</span>"}</td>`
           + `<td>${new Date(entry.last_timestamp)}</td>`
-          + `<td><span class=\"${(!entry.online) ? "status-offline\">Offline" : (isNaN(ethState)) ? "status-disabled\">Disabled" : (ethState > threshold_ms) ? "status-attn\">Warning" : "status-online\">Online"}</span></td>`
-          + `<td><span class=\"${(!entry.online) ? "status-offline\">Offline" : (isNaN(wlanState)) ? "status-disabled\">Disabled" : (wlanState > threshold_ms) ? "status-attn\">Warning" : "status-online\">Online"}</span></td>`;
+          + `<td><span class=\"${(!entry.online) ? "status-offline\">Offline" : (cap) ? "status-disabled\">Data cap" : (isNaN(ethState)) ? "status-disabled\">Disabled" : (ethState > threshold_ms) ? "status-attn\">Warning" : "status-online\">Online"}</span></td>`
+          + `<td><span class=\"${(!entry.online) ? "status-offline\">Offline" : (cap) ? "status-disabled\">Data cap" : (isNaN(wlanState)) ? "status-disabled\">Disabled" : (wlanState > threshold_ms) ? "status-attn\">Warning" : "status-online\">Online"}</span></td>`;
         mainContainer.appendChild(tr);
       }
     }
