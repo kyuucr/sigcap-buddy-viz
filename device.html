@@ -126,23 +126,15 @@
                   <td id="mean_ul_tput_mbps_wlan"></td>
                 </tr>
                 <tr>
-                  <td>Total Collected DL Data in Ethernet</td>
-                  <td id="day_worth_of_dl_data_eth"></td>
+                  <td>Total Collected Data</td>
+                  <td id="total_day"></td>
                 </tr>
                 <tr>
-                  <td>Total Collected DL Data in WLAN</td>
-                  <td id="day_worth_of_dl_data_wlan"></td>
+                  <td>Total Consecutive Weeks</td>
+                  <td id="total_consecutive_week"></td>
                 </tr>
                 <tr>
-                  <td>Total Collected UL Data in Ethernet</td>
-                  <td id="day_worth_of_ul_data_eth"></td>
-                </tr>
-                <tr>
-                  <td>Total Collected UL Data in WLAN</td>
-                  <td id="day_worth_of_ul_data_wlan"></td>
-                </tr>
-                <tr>
-                  <td>Data  Used</td>
+                  <td>Monthly Data Used</td>
                   <td id="data_used_gbytes"></td>
                 </tr>
               </tbody>
@@ -483,14 +475,12 @@
         td = document.getElementById(id);
         td.innerHTML = `${hb[id].toFixed(2)} Mbps`;
       }
-      for (let id of ["day_worth_of_dl_data_eth", "day_worth_of_dl_data_wlan", "day_worth_of_ul_data_eth", "day_worth_of_ul_data_wlan"]) {
-        td = document.getElementById(id);
-        td.innerHTML = `${hb[id].toFixed(2)} days worth of data`;
-      }
-      for (let id of ["data_used_gbytes"]) {
-        td = document.getElementById(id);
-        td.innerHTML = `${hb[id].toFixed(2)} GBytes`;
-      }
+      td = document.getElementById("total_day");
+      td.innerHTML = `${hb["total_day"]} days`;
+      td = document.getElementById("total_consecutive_week");
+      td.innerHTML = `${hb["total_consecutive_week"]} weeks`;
+      td = document.getElementById("data_used_gbytes");
+      td.innerHTML = `${hb["data_used_gbytes"].toFixed(2)} GBytes`;
     }
 
     // Hardcoded dict
