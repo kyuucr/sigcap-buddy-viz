@@ -107,6 +107,7 @@
 
     function appendData(data) {
       let mainContainer = document.getElementById("device-list");
+      data = data.filter(val => val.mac.startsWith("RPI-"));
       for (let entry of data) {
         let ethState = entry.last_timestamp - entry.last_test_eth;
         let wlanState = entry.last_timestamp - entry.last_test_wlan;
